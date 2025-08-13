@@ -21,7 +21,9 @@ export async function GET() {
       ...expenses,
       ...memoryExpenses.map((e) => ({ ...e, date: new Date(e.date) })),
     ] });
-  } catch {
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    console.log('Using in-memory fallback. Set DATABASE_URL for persistent storage.');
     return NextResponse.json({ expenses: memoryExpenses.map((e) => ({ ...e, date: new Date(e.date) })) });
   }
 }

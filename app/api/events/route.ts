@@ -20,7 +20,9 @@ export async function GET() {
   let events: Awaited<ReturnType<typeof prisma.boatEvent.findMany>> = [];
   try {
     events = await prisma.boatEvent.findMany();
-  } catch {
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    console.log('Using in-memory fallback. Set DATABASE_URL for persistent storage.');
     events = [];
   }
 
