@@ -29,13 +29,30 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
   const onSubmit = async (values: FormValues) => {
     const startIso = new Date(`${values.date}T${values.startHour.padStart(2, '0')}:00:00`).toISOString();
     const endIso = new Date(`${values.date}T${values.endHour.padStart(2, '0')}:00:00`).toISOString();
-    await fetch("/api/events", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ start: startIso, end: endIso, owner: values.owner, allDay: false }),
-    });
-    reset();
-    onCreated?.();
+    
+    try {
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ start: startIso, end: endIso, owner: values.owner, allDay: false }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.error === "OVERLAP") {
+          alert("Dieser Zeitraum ist bereits gebucht. Bitte wählen Sie einen anderen Zeitraum.");
+          return;
+        } else if (errorData.error) {
+          alert(`Fehler: ${errorData.error}`);
+          return;
+        }
+      }
+      
+      reset();
+      onCreated?.();
+    } catch (error) {
+      alert("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
+    }
   };
 
   return (

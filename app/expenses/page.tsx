@@ -156,9 +156,9 @@ export default function ExpensesPage() {
             <TableRow>
               <TableCell sx={{ fontWeight: 600 }}>{t('expenses.date')}</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>{t('expenses.item')}</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 600 }}>{t('expenses.cost')}</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 600 }}>{t('expenses.paidBy')}</TableCell>
-              <TableCell align="center" sx={{ width: 56 }}></TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>{t('expenses.cost')}</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>{t('expenses.paidBy')}</TableCell>
+              <TableCell sx={{ width: 56 }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -166,11 +166,11 @@ export default function ExpensesPage() {
               <TableRow key={e.id} hover>
                 <TableCell>{new Date(e.date).toLocaleDateString('de-DE')}</TableCell>
                 <TableCell>{e.description}</TableCell>
-                <TableCell align="right">{euro.format(e.amountCents / 100)}</TableCell>
-                <TableCell align="center">
+                <TableCell>{euro.format(e.amountCents / 100)}</TableCell>
+                <TableCell>
                   <Chip size="small" label={e.paidBy === 'MARIO' ? t('calendar.mario') : t('calendar.moritz')} color={e.paidBy === 'MARIO' ? 'primary' : 'default'} variant={e.paidBy === 'MARIO' ? 'filled' : 'outlined'} />
                 </TableCell>
-                <TableCell align="center">
+                <TableCell>
                   <IconButton aria-label="delete" onClick={() => removeExpense(e.id)}>
                     <DeleteIcon fontSize="small" />
                   </IconButton>

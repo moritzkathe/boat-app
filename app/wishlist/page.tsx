@@ -80,9 +80,8 @@ export default function WishlistPage() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 600 }}>{t('wishlist.item')}</TableCell>
-              
-              <TableCell align="center" sx={{ fontWeight: 600 }}>{t('wishlist.proposedBy')}</TableCell>
-              <TableCell align="center" sx={{ width: 112 }}></TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>{t('wishlist.proposedBy')}</TableCell>
+              <TableCell sx={{ width: 112 }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -96,9 +95,8 @@ export default function WishlistPage() {
                     </a>
                   </Stack>
                 </TableCell>
-                
-                <TableCell align="center"><Chip size="small" label={w.proposedBy === 'MARIO' ? t('calendar.mario') : t('calendar.moritz')} /></TableCell>
-                <TableCell align="center">
+                <TableCell><Chip size="small" label={w.proposedBy === 'MARIO' ? t('calendar.mario') : t('calendar.moritz')} /></TableCell>
+                <TableCell>
                   <IconButton aria-label="delete" onClick={() => remove(w.id)}>
                     <DeleteIcon fontSize="small" />
                   </IconButton>

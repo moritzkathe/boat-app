@@ -121,6 +121,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
   const { title, start, end, allDay, owner } = parsed.data;
+  
   try {
     // prevent past bookings
     const now = new Date();
@@ -128,18 +129,77 @@ export async function POST(req: NextRequest) {
     if (startDate < new Date(now.toISOString().slice(0,10))) {
       return NextResponse.json({ error: "Cannot book in the past" }, { status: 400 });
     }
+    
+    const endDate = end ? new Date(end) : new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1 hour
+    
+    // Check for overlapping events
+    const overlappingEvents = await prisma.boatEvent.findMany({
+      where: {
+        AND: [
+          {
+            OR: [
+              // New event starts during existing event
+              {
+                start: { lte: startDate },
+                end: { gt: startDate }
+              },
+              // New event ends during existing event
+              {
+                start: { lt: endDate },
+                end: { gte: endDate }
+              },
+              // New event completely contains existing event
+              {
+                start: { gte: startDate },
+                end: { lte: endDate }
+              }
+            ]
+          },
+          {
+            // Exclude background events (weekly blocks)
+            NOT: {
+              title: ""
+            }
+          }
+        ]
+      }
+    });
+    
+    if (overlappingEvents.length > 0) {
+      return NextResponse.json({ error: "OVERLAP" }, { status: 409 });
+    }
+    
     const created = await prisma.boatEvent.create({
       data: {
         title,
         start: startDate,
-        end: end ? new Date(end) : null,
-        allDay: allDay ?? true,
+        end: endDate,
+        allDay: allDay ?? false,
         owner,
       },
     });
     return NextResponse.json({ event: created });
-  } catch {
+  } catch (error) {
     // Fallback to in-memory event in prototype mode
+    // Check for overlaps in memory events
+    const startDate = new Date(start);
+    const endDate = end ? new Date(end) : new Date(startDate.getTime() + 60 * 60 * 1000);
+    
+    const hasOverlap = memoryEvents.some(event => {
+      const eventStart = new Date(event.start);
+      const eventEnd = new Date(event.end);
+      
+      return (
+        (startDate >= eventStart && startDate < eventEnd) ||
+        (endDate > eventStart && endDate <= eventEnd) ||
+        (startDate <= eventStart && endDate >= eventEnd)
+      );
+    });
+    
+    if (hasOverlap) {
+      return NextResponse.json({ error: "OVERLAP" }, { status: 409 });
+    }
+    
     const mem: MemoryEvent = {
       id: randomUUID(),
       title,

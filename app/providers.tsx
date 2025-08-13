@@ -51,10 +51,9 @@ export default function Providers({ children }: { children: ReactNode }) {
             </Box>
             <Box sx={{ justifySelf: 'end' }}>
               <Button
-                variant="outlined"
+                variant="text"
                 size="small"
                 onClick={handleLogout}
-                startIcon={<LogoutIcon />}
                 sx={{ fontSize: '0.75rem' }}
               >
                 Abmelden
