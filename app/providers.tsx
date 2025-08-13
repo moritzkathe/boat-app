@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Container, AppBar, Toolbar, Button, Box } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { ThemeProvider } from "@mui/material/styles";
 import { t } from "@/lib/i18n";
 import theme from "./theme";
@@ -14,6 +15,12 @@ import "dayjs/locale/de";
 export default function Providers({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  
+  const handleLogout = () => {
+    localStorage.removeItem('boat-app-authenticated');
+    window.location.reload();
+  };
+  
   return (
     <ThemeProvider theme={theme}>
       <AppBar
@@ -38,9 +45,21 @@ export default function Providers({ children }: { children: ReactNode }) {
               )}
             </Box>
             <Box sx={{ justifySelf: 'center', display: 'flex', alignItems: 'center' }}>
-              <img src="/logo.svg" alt="Logo" style={{ width: 48, height: 48, display: 'block' }} />
+              <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
+                <img src="/logo.svg" alt="Logo" style={{ width: 48, height: 48, display: 'block' }} />
+              </Link>
             </Box>
-            <Box sx={{ justifySelf: 'end' }}></Box>
+            <Box sx={{ justifySelf: 'end' }}>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={handleLogout}
+                startIcon={<LogoutIcon />}
+                sx={{ fontSize: '0.75rem' }}
+              >
+                Abmelden
+              </Button>
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>

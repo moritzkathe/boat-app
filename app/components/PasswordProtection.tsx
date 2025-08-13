@@ -58,23 +58,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     return (
       <>
         {children}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 16,
-            right: 16,
-            zIndex: 1000,
-          }}
-        >
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleLogout}
-            sx={{ fontSize: '0.75rem' }}
-          >
-            Abmelden
-          </Button>
-        </Box>
       </>
     );
   }

@@ -63,19 +63,24 @@ export default function CalendarPage() {
         gap: 8px;
       }
       .fc-button {
-        background-color: #f5f5f5 !important;
+        background-color: #ffffff !important;
         border-color: #e0e0e0 !important;
-        color: #1e88e5 !important;
+        color: #666666 !important;
         font-weight: 500 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+        transition: all 0.2s ease !important;
       }
       .fc-button:hover {
-        background-color: #e3f2fd !important;
+        background-color: #f8f9fa !important;
         border-color: #1e88e5 !important;
+        color: #1e88e5 !important;
+        box-shadow: 0 2px 6px rgba(30,136,229,0.2) !important;
       }
       .fc-button-active {
         background-color: #1e88e5 !important;
         border-color: #1e88e5 !important;
         color: white !important;
+        box-shadow: 0 2px 8px rgba(30,136,229,0.3) !important;
       }
       .fc-prev-button, .fc-next-button {
         background-color: #1e88e5 !important;

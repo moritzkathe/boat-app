@@ -81,7 +81,12 @@ export default function ExpensesPage() {
           {...register("description", { required: t('form.required') as string })}
           error={!!errors.description}
           helperText={errors.description?.message as string}
-          sx={{ gridColumn: '1 / -1' }}
+          sx={{ 
+            gridColumn: '1 / -1',
+            '& .MuiInputBase-root': {
+              height: '56px'
+            }
+          }}
         />
         <TextField
           required
@@ -93,6 +98,11 @@ export default function ExpensesPage() {
           error={!!errors.amount}
           helperText={errors.amount?.message as string}
           InputProps={{ startAdornment: <InputAdornment position="start">€</InputAdornment> }}
+          sx={{ 
+            '& .MuiInputBase-root': {
+              height: '56px'
+            }
+          }}
         />
         <TextField
           required
@@ -104,7 +114,11 @@ export default function ExpensesPage() {
           error={!!errors.date}
           helperText={errors.date?.message as string}
           fullWidth
-          sx={{ height: '100%' }}
+          sx={{ 
+            '& .MuiInputBase-root': {
+              height: '56px'
+            }
+          }}
         />
         <Controller
           name="paidBy"
