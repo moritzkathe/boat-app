@@ -1,148 +1,118 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Box, Button, Divider, Stack, TextField, Typography, ToggleButton, ToggleButtonGroup, Card, CardContent, CardActions, IconButton, Link } from "@mui/material";
+import { Box, Button, Chip, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useForm, Controller } from "react-hook-form";
 import { t } from "@/lib/i18n";
 
-type WishlistItem = {
+type Wish = {
   id: string;
   title: string;
   url: string;
   description?: string;
   proposedBy: "MARIO" | "MORITZ";
-  createdAt: string;
+  createdAt?: string;
 };
 
-type WishlistForm = {
+type WishForm = {
   title: string;
   url: string;
-  description: string;
+  description?: string;
   proposedBy: "MARIO" | "MORITZ";
 };
 
 export default function WishlistPage() {
-  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<WishlistForm>({
-    defaultValues: {
-      proposedBy: "MARIO",
-    },
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<WishForm>({
+    defaultValues: { proposedBy: "MARIO" },
   });
-  const [items, setItems] = useState<WishlistItem[]>([]);
+  const [items, setItems] = useState<Wish[]>([]);
 
-  const fetchItems = async () => {
-    const res = await fetch("/api/wishlist");
-    const data = await res.json();
-    setItems(data.items || []);
+  const load = async () => {
+    const r = await fetch('/api/wishlist');
+    const d = await r.json();
+    setItems(d.items || []);
   };
-  const removeItem = async (id: string) => {
+
+  useEffect(() => { load(); }, []);
+
+  const onSubmit = async (v: WishForm) => {
+    await fetch('/api/wishlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(v) });
+    reset({ title: '', url: '', description: '', proposedBy: 'MARIO' });
+    await load();
+  };
+
+  const remove = async (id: string) => {
     await fetch(`/api/wishlist?id=${id}`, { method: 'DELETE' });
-    await fetchItems();
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const onSubmit = async (values: WishlistForm) => {
-    const payload = {
-      title: values.title,
-      url: values.url,
-      description: values.description,
-      proposedBy: values.proposedBy,
-    };
-    await fetch("/api/wishlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    reset();
-    await fetchItems();
+    await load();
   };
 
   return (
     <Box sx={{ my: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Typography variant="h6" fontWeight={600}>{t('wishlist.title')}</Typography>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <TextField
-          required
-          label={t('wishlist.item')}
-          placeholder="z.B. Neues Ankerseil, GPS-Gerät"
-          fullWidth
-          {...register("title", { required: t('form.required') as string })}
-          error={!!errors.title}
-          helperText={errors.title?.message as string}
-        />
-        <TextField
-          required
-          label={t('wishlist.link')}
-          placeholder="https://example.com/product"
-          fullWidth
-          {...register("url", { required: t('form.required') as string })}
-          error={!!errors.url}
-          helperText={errors.url?.message as string}
-        />
-        <TextField
-          label={t('wishlist.reason')}
-          placeholder={t('wishlist.reasonPlaceholder')}
-          fullWidth
-          multiline
-          rows={3}
-          {...register("description")}
-        />
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+        <TextField label={t('wishlist.item')} placeholder="z.B. Neue Fender" fullWidth required {...register('title', { required: t('form.required') as string })} sx={{ gridColumn: '1 / -1' }} error={!!errors.title} helperText={errors.title?.message as string} />
+        <TextField label={t('wishlist.link')} placeholder="https://..." type="url" fullWidth required {...register('url', { required: t('form.required') as string })} error={!!errors.url} helperText={errors.url?.message as string} sx={{ gridColumn: '1 / -1' }} />
         <Controller
           name="proposedBy"
           control={control}
-          render={({ field }) => (
+          rules={{ required: true }}
+          render={({ field: { value, onChange } }) => (
             <ToggleButtonGroup
-              {...field}
               exclusive
-              fullWidth
+              size="large"
+              value={value}
+              onChange={(_, v) => v && onChange(v)}
+              aria-label={t('wishlist.proposedBy')}
+              sx={{ width: '100%', gridColumn: '1 / -1' }}
             >
-              <ToggleButton value="MARIO">{t('calendar.mario')}</ToggleButton>
-              <ToggleButton value="MORITZ">{t('calendar.moritz')}</ToggleButton>
+              <ToggleButton value="MARIO" sx={{ flex: 1, py: 1.5 }}>{t('calendar.mario')}</ToggleButton>
+              <ToggleButton value="MORITZ" sx={{ flex: 1, py: 1.5 }}>{t('calendar.moritz')}</ToggleButton>
             </ToggleButtonGroup>
           )}
         />
         <Button type="submit" variant="contained" size="large" sx={{ gridColumn: '1 / -1', height: 56 }}>{t('wishlist.add')}</Button>
       </Box>
 
-      <Divider />
-
-      <Box>
-        <Typography variant="h6" gutterBottom>{t('wishlist.title')}</Typography>
-        {items.length === 0 ? (
-          <Typography color="text.secondary">{t('wishlist.empty')}</Typography>
-        ) : (
-          <Stack spacing={2}>
-            {items.map((item) => (
-              <Card key={item.id}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {item.title}
-                  </Typography>
-                  {item.description && (
-                    <Typography color="text.secondary" sx={{ mb: 1 }}>
-                      {item.description}
-                    </Typography>
-                  )}
-                  <Link href={item.url} target="_blank" rel="noopener noreferrer" sx={{ display: 'block', mb: 1 }}>
-                    {item.url}
-                  </Link>
-                  <Typography variant="caption" color="text.secondary">
-                    {t('wishlist.proposedBy')} {item.proposedBy === 'MARIO' ? t('calendar.mario') : t('calendar.moritz')} • {new Date(item.createdAt).toLocaleDateString('de-DE')}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <IconButton onClick={() => removeItem(item.id)} size="small">
-                    <DeleteIcon />
+      <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 600 }}>{t('wishlist.item')}</TableCell>
+              
+              <TableCell align="center" sx={{ fontWeight: 600 }}>{t('wishlist.proposedBy')}</TableCell>
+              <TableCell align="center" sx={{ width: 112 }}></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {items.map((w) => (
+              <TableRow key={w.id} hover>
+                <TableCell>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <a href={w.url} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <OpenInNewIcon fontSize="small" />
+                      <Typography fontWeight={600}>{w.title}</Typography>
+                    </a>
+                  </Stack>
+                </TableCell>
+                
+                <TableCell align="center"><Chip size="small" label={w.proposedBy === 'MARIO' ? t('calendar.mario') : t('calendar.moritz')} /></TableCell>
+                <TableCell align="center">
+                  <IconButton aria-label="delete" onClick={() => remove(w.id)}>
+                    <DeleteIcon fontSize="small" />
                   </IconButton>
-                </CardActions>
-              </Card>
+                </TableCell>
+              </TableRow>
             ))}
-          </Stack>
-        )}
-      </Box>
+            {items.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} align="center"><Typography color="text.secondary">{t('wishlist.empty')}</Typography></TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }

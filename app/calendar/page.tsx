@@ -93,24 +93,30 @@ export default function CalendarPage() {
           return { domNodes: [el] };
         }}
         eventClick={(info) => {
+          // Allow cancel only in week view and for non-background events
           if (info.view.type !== 'timeGridWeek') return;
           if (info.event.display === 'background') return;
           setPendingDeleteId(info.event.id as string);
           setConfirmOpen(true);
         }}
+        height="auto"
       />
       <DeleteDialog
         open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        onConfirm={async () => {
-          if (pendingDeleteId) {
-            await fetch(`/api/events?id=${pendingDeleteId}`, { method: 'DELETE' });
-            fetch("/api/events").then(r => r.json()).then(d => setEvents(d.events || []));
-          }
-          setConfirmOpen(false);
-          setPendingDeleteId(null);
+        onClose={() => { setConfirmOpen(false); setPendingDeleteId(null); }}
+        onConfirm={() => {
+          if (!pendingDeleteId) return;
+          fetch(`/api/events?id=${pendingDeleteId}`, { method: 'DELETE' })
+            .then(() => fetch('/api/events'))
+            .then((r) => r.json())
+            .then((d) => setEvents(d.events || []))
+            .finally(() => { setConfirmOpen(false); setPendingDeleteId(null); });
         }}
       />
+      <Stack direction="row" spacing={1} mt={2} alignItems="center" justifyContent="center">
+        <Chip size="small" label={`${t('calendar.mario')} (${t('calendar.primary')})`} sx={{ bgcolor: "#e3f2fd", color: "#0d47a1" }} />
+        <Chip size="small" label={`${t('calendar.moritz')} (${t('calendar.primary')})`} sx={{ bgcolor: "#ffe0b2", color: "#e65100" }} />
+      </Stack>
     </Box>
   );
 }

@@ -40,6 +40,7 @@ export default function ExpensesPage() {
     await fetchExpenses();
   };
 
+
   useEffect(() => {
     fetchExpenses();
   }, []);
@@ -64,8 +65,8 @@ export default function ExpensesPage() {
   const splitEachCents = Math.round(totalCents / 2);
   const paidByMario = expenses.filter(e => e.paidBy === 'MARIO').reduce((s, e) => s + e.amountCents, 0);
   const paidByMoritz = expenses.filter(e => e.paidBy === 'MORITZ').reduce((s, e) => s + e.amountCents, 0);
-  const marioBalance = paidByMario - splitEachCents;
-  const moritzBalance = paidByMoritz - splitEachCents;
+  const marioBalance = paidByMario - splitEachCents; // positive = Mario paid more than his share
+  const moritzBalance = paidByMoritz - splitEachCents; // positive = Moritz paid more than his share
 
   return (
     <Box sx={{ my: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -97,91 +98,119 @@ export default function ExpensesPage() {
           required
           label={t('expenses.date')}
           type="date"
+          placeholder="TT.MM.JJJJ"
+          InputLabelProps={{ shrink: true }}
           {...register("date", { required: t('form.required') as string })}
           error={!!errors.date}
           helperText={errors.date?.message as string}
         />
-        <Box sx={{ gridColumn: '1 / -1' }}>
-          <Controller
-            name="paidBy"
-            control={control}
-            render={({ field }) => (
-              <ToggleButtonGroup
-                {...field}
-                exclusive
-                fullWidth
-                sx={{ mb: 2 }}
-              >
-                <ToggleButton value="MARIO">{t('calendar.mario')}</ToggleButton>
-                <ToggleButton value="MORITZ">{t('calendar.moritz')}</ToggleButton>
-              </ToggleButtonGroup>
-            )}
-          />
-                  <Button type="submit" variant="contained" size="large" sx={{ gridColumn: '1 / -1', height: 56 }}>
+        <Controller
+          name="paidBy"
+          control={control}
+          rules={{ required: t('form.required') as string }}
+          render={({ field: { value, onChange } }) => (
+            <ToggleButtonGroup
+              exclusive
+              size="large"
+              value={value}
+              onChange={(_, v) => v && onChange(v)}
+              aria-label={t('expenses.paidBy')}
+              sx={{ gridColumn: '1 / -1', width: '100%' }}
+            >
+              <ToggleButton value="MARIO" sx={{ flex: 1, py: 1.5 }}>{t('calendar.mario')}</ToggleButton>
+              <ToggleButton value="MORITZ" sx={{ flex: 1, py: 1.5 }}>{t('calendar.moritz')}</ToggleButton>
+            </ToggleButtonGroup>
+          )}
+        />
+        {errors.paidBy && (
+          <Typography variant="caption" color="error" sx={{ gridColumn: '1 / -1' }}>
+            {errors.paidBy.message as string}
+          </Typography>
+        )}
+        <Button type="submit" variant="contained" size="large" sx={{ gridColumn: '1 / -1', height: 56 }}>
           {t('expenses.add')}
         </Button>
-        </Box>
       </Box>
 
       <Divider />
 
-      <Box>
-        <Typography variant="h6" gutterBottom>{t('expenses.balance.title')}</Typography>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <Typography variant="body1">
-            {t('expenses.total')}: {euro.format(totalCents / 100)}
-          </Typography>
-          <Typography variant="body1">
-            {t('expenses.balance.hint')}
-          </Typography>
-        </Stack>
-        
-        {marioBalance === 0 && moritzBalance === 0 ? (
-          <Chip label={t('expenses.balance.settled')} color="success" />
-        ) : marioBalance > 0 ? (
-          <Chip label={t('expenses.balance.marioOwesMoritz') + ` ${euro.format(marioBalance / 100)}`} color="warning" />
-        ) : (
-          <Chip label={t('expenses.balance.moritzOwesMario') + ` ${euro.format(Math.abs(marioBalance) / 100)}`} color="warning" />
-        )}
-      </Box>
+      <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 600 }}>{t('expenses.date')}</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>{t('expenses.item')}</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 600 }}>{t('expenses.cost')}</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600 }}>{t('expenses.paidBy')}</TableCell>
+              <TableCell align="center" sx={{ width: 56 }}></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {expenses.map((e) => (
+              <TableRow key={e.id} hover>
+                <TableCell>{new Date(e.date).toLocaleDateString('de-DE')}</TableCell>
+                <TableCell>{e.description}</TableCell>
+                <TableCell align="right">{euro.format(e.amountCents / 100)}</TableCell>
+                <TableCell align="center">
+                  <Chip size="small" label={e.paidBy === 'MARIO' ? t('calendar.mario') : t('calendar.moritz')} color={e.paidBy === 'MARIO' ? 'primary' : 'default'} variant={e.paidBy === 'MARIO' ? 'filled' : 'outlined'} />
+                </TableCell>
+                <TableCell align="center">
+                  <IconButton aria-label="delete" onClick={() => removeExpense(e.id)}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+            {expenses.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  <Typography color="text.secondary">{t('expenses.empty')}</Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Divider />
 
-      <Box>
-        <Typography variant="h6" gutterBottom>{t('expenses.title')}</Typography>
-        {expenses.length === 0 ? (
-          <Typography color="text.secondary">{t('expenses.empty')}</Typography>
+      <Paper
+        variant="outlined"
+        sx={{
+          p: 2,
+          textAlign: 'center',
+          bgcolor:
+            marioBalance === moritzBalance
+              ? 'rgba(76,175,80,0.08)'
+              : 'rgba(30,136,229,0.08)',
+          borderRadius: 2,
+        }}
+      >
+        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+          {t('expenses.balance.title')}
+        </Typography>
+        {marioBalance === moritzBalance ? (
+          <Typography variant="h6">{t('expenses.balance.settled')}</Typography>
+        ) : marioBalance < moritzBalance ? (
+          <Typography variant="h6">
+            {t('expenses.balance.marioOwesMoritz')}: {euro.format((moritzBalance - marioBalance) / 100)}
+          </Typography>
         ) : (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>{t('expenses.item')}</TableCell>
-                  <TableCell>{t('expenses.cost')}</TableCell>
-                  <TableCell>{t('expenses.date')}</TableCell>
-                  <TableCell>{t('expenses.paidBy')}</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {expenses.map((expense) => (
-                  <TableRow key={expense.id}>
-                    <TableCell>{expense.description}</TableCell>
-                    <TableCell>{euro.format(expense.amountCents / 100)}</TableCell>
-                    <TableCell>{new Date(expense.date).toLocaleDateString('de-DE')}</TableCell>
-                    <TableCell>{expense.paidBy === 'MARIO' ? t('calendar.mario') : t('calendar.moritz')}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => removeExpense(expense.id)} size="small">
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Typography variant="h6">
+            {t('expenses.balance.moritzOwesMario')}: {euro.format((marioBalance - moritzBalance) / 100)}
+          </Typography>
         )}
-      </Box>
+        <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
+          {t('expenses.balance.hint')}
+        </Typography>
+      </Paper>
+
+      <Divider />
+
+      <Stack direction="row" justifyContent="space-between">
+        <Typography fontWeight={600}>{t('expenses.total')}</Typography>
+        <Typography>{euro.format(totalCents / 100)}</Typography>
+      </Stack>
     </Box>
   );
 }
