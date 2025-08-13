@@ -18,11 +18,17 @@ const memoryEvents: MemoryEvent[] = [];
 export async function GET() {
   // Fetch stored events plus generate alternating weekly blocks for Mario and Moritz
   let events: Awaited<ReturnType<typeof prisma.boatEvent.findMany>> = [];
+  
+  // Debug database connection
+  console.log('🔍 Checking database connection...');
+  console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+  
   try {
     events = await prisma.boatEvent.findMany();
+    console.log('✅ Database connection successful! Found', events.length, 'events');
   } catch (error) {
-    console.error('Database connection failed:', error);
-    console.log('Using in-memory fallback. Set DATABASE_URL for persistent storage.');
+    console.error('❌ Database connection failed:', error);
+    console.log('⚠️ Using in-memory fallback. Set DATABASE_URL for persistent storage.');
     events = [];
   }
 
