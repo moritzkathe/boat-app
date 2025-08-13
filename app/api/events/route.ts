@@ -134,7 +134,10 @@ export async function POST(req: NextRequest) {
     // prevent past bookings
     const now = new Date();
     const startDate = new Date(start);
-    if (startDate < new Date(now.toISOString().slice(0,10))) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (startDate < today) {
       return NextResponse.json({ error: "Cannot book in the past" }, { status: 400 });
     }
     
@@ -160,6 +163,11 @@ export async function POST(req: NextRequest) {
               {
                 start: { gte: startDate },
                 end: { lte: endDate }
+              },
+              // Existing event completely contains new event
+              {
+                start: { lte: startDate },
+                end: { gte: endDate }
               }
             ]
           },
@@ -173,9 +181,16 @@ export async function POST(req: NextRequest) {
       }
     });
     
+    console.log('🔍 Checking for overlaps...');
+    console.log('New event:', { start: startDate, end: endDate });
+    console.log('Found overlapping events:', overlappingEvents.length);
+    
     if (overlappingEvents.length > 0) {
+      console.log('❌ Overlap detected! Blocking booking.');
       return NextResponse.json({ error: "OVERLAP" }, { status: 409 });
     }
+    
+    console.log('✅ No overlaps found. Creating event.');
     
     const created = await prisma.boatEvent.create({
       data: {
@@ -198,15 +213,27 @@ export async function POST(req: NextRequest) {
       const eventEnd = new Date(event.end);
       
       return (
+        // New event starts during existing event
         (startDate >= eventStart && startDate < eventEnd) ||
+        // New event ends during existing event
         (endDate > eventStart && endDate <= eventEnd) ||
-        (startDate <= eventStart && endDate >= eventEnd)
+        // New event completely contains existing event
+        (startDate <= eventStart && endDate >= eventEnd) ||
+        // Existing event completely contains new event
+        (eventStart <= startDate && eventEnd >= endDate)
       );
     });
     
+    console.log('🔍 Checking for overlaps in memory...');
+    console.log('New event:', { start: startDate, end: endDate });
+    console.log('Memory events:', memoryEvents.length);
+    
     if (hasOverlap) {
+      console.log('❌ Overlap detected in memory! Blocking booking.');
       return NextResponse.json({ error: "OVERLAP" }, { status: 409 });
     }
+    
+    console.log('✅ No overlaps found in memory. Creating event.');
     
     const mem: MemoryEvent = {
       id: randomUUID(),

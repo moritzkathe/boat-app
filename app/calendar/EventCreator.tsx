@@ -27,8 +27,19 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
   });
 
   const onSubmit = async (values: FormValues) => {
-    const startIso = new Date(`${values.date}T${values.startHour.padStart(2, '0')}:00:00`).toISOString();
-    const endIso = new Date(`${values.date}T${values.endHour.padStart(2, '0')}:00:00`).toISOString();
+    // Validate that end time is after start time
+    if (parseInt(values.endHour) <= parseInt(values.startHour)) {
+      alert("Die Endzeit muss nach der Startzeit liegen.");
+      return;
+    }
+    
+    // Create dates in local timezone to avoid timezone conversion issues
+    const startDate = new Date(`${values.date}T${values.startHour.padStart(2, '0')}:00:00`);
+    const endDate = new Date(`${values.date}T${values.endHour.padStart(2, '0')}:00:00`);
+    
+    // Convert to ISO strings for API
+    const startIso = startDate.toISOString();
+    const endIso = endDate.toISOString();
     
     try {
       const response = await fetch("/api/events", {
@@ -41,6 +52,9 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         const errorData = await response.json();
         if (errorData.error === "OVERLAP") {
           alert("Dieser Zeitraum ist bereits gebucht. Bitte wählen Sie einen anderen Zeitraum.");
+          return;
+        } else if (errorData.error === "Cannot book in the past") {
+          alert("Sie können keine Termine in der Vergangenheit buchen.");
           return;
         } else if (errorData.error) {
           alert(`Fehler: ${errorData.error}`);
@@ -60,7 +74,15 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
       <Controller
         name="date"
         control={control}
-        rules={{ required: true, validate: (v) => new Date(v) >= new Date(new Date().toISOString().slice(0,10)) }}
+        rules={{ 
+          required: true, 
+          validate: (v) => {
+            const selectedDate = new Date(v);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return selectedDate >= today || 'Datum muss in der Zukunft liegen';
+          }
+        }}
         render={({ field: { value, onChange } }) => (
           <DatePicker
             label={t('creator.date')}
@@ -80,7 +102,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           ))}
         </TextField>
         <TextField label={t('creator.endTime')} select {...register("endHour", { required: true })} fullWidth sx={{ flex: 1 }}>
-          {Array.from({ length: 12 }, (_, i) => String(11 + i).padStart(2, '0')).map((h) => (
+          {Array.from({ length: 14 }, (_, i) => String(9 + i).padStart(2, '0')).map((h) => (
             <MenuItem key={h} value={h}>{h}:00</MenuItem>
           ))}
         </TextField>
