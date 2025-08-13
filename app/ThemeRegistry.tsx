@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
 import { CacheProvider } from '@emotion/react';
+import { CssBaseline } from '@mui/material';
 import createEmotionCache from './emotion-cache';
 
 export default function ThemeRegistry({ children }: { children: React.ReactNode }) {
@@ -41,5 +42,10 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode 
     );
   });
 
-  return <CacheProvider value={cache}>{children}</CacheProvider>;
+  return (
+    <CacheProvider value={cache}>
+      <CssBaseline />
+      {children}
+    </CacheProvider>
+  );
 }

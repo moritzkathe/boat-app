@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CssBaseline, Container, AppBar, Toolbar, Button, Box, Typography } from "@mui/material";
+import { Container, AppBar, Toolbar, Button, Box, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { ThemeProvider } from "@mui/material/styles";
 import { t } from "@/lib/i18n";
@@ -16,7 +16,6 @@ export default function Providers({ children }: { children: ReactNode }) {
   const isHome = pathname === "/";
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
       <AppBar
         position="sticky"
         color="inherit"
