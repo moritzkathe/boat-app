@@ -84,7 +84,7 @@ export default function EventCreator({ onCreated }: { onCreated: () => void }) {
             </ToggleButtonGroup>
           )}
         />
-        <Button type="submit" variant="contained" fullWidth>
+        <Button type="submit" variant="contained" fullWidth size="large" sx={{ py: 1.5 }}>
           {t('creator.add')}
         </Button>
       </Box>
