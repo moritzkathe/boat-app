@@ -41,7 +41,68 @@ export default function CalendarPage() {
       .catch(() => setEvents([]));
   }, []);
 
-
+  // Add custom CSS for calendar styling
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .fc-header-toolbar {
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      .fc-header-toolbar .fc-toolbar-chunk:first-child {
+        order: 1;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e88e5;
+      }
+      .fc-header-toolbar .fc-toolbar-chunk:last-child {
+        order: 2;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+      }
+      .fc-button {
+        background-color: #f5f5f5 !important;
+        border-color: #e0e0e0 !important;
+        color: #1e88e5 !important;
+        font-weight: 500 !important;
+      }
+      .fc-button:hover {
+        background-color: #e3f2fd !important;
+        border-color: #1e88e5 !important;
+      }
+      .fc-button-active {
+        background-color: #1e88e5 !important;
+        border-color: #1e88e5 !important;
+        color: white !important;
+      }
+      .fc-prev-button, .fc-next-button {
+        background-color: #1e88e5 !important;
+        border-color: #1e88e5 !important;
+        color: white !important;
+      }
+      .fc-prev-button:hover, .fc-next-button:hover {
+        background-color: #1565c0 !important;
+        border-color: #1565c0 !important;
+      }
+      .fc-today-button {
+        background-color: #f5f5f5 !important;
+        border-color: #e0e0e0 !important;
+        color: #1e88e5 !important;
+      }
+      .fc-today-button:hover {
+        background-color: #e3f2fd !important;
+        border-color: #1e88e5 !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
+      }
+    };
+  }, []);
 
   return (
     <Box sx={{ my: 2 }}>
@@ -54,9 +115,9 @@ export default function CalendarPage() {
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
-          left: 'dayGridMonth,timeGridWeek',
-          center: 'title',
-          right: 'prev,next'
+          left: 'title',
+          center: '',
+          right: 'dayGridMonth,timeGridWeek prev,today,next'
         }}
         firstDay={1}
         locales={[deLocale]}

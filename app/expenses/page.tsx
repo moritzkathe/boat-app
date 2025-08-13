@@ -76,7 +76,7 @@ export default function ExpensesPage() {
         <TextField
           required
           label={t('expenses.item')}
-          placeholder="z.B. Neues Ankerseil, Diesel Tankfüllung"
+          placeholder="z.B. Ankerseil"
           fullWidth
           {...register("description", { required: t('form.required') as string })}
           error={!!errors.description}
@@ -104,6 +104,7 @@ export default function ExpensesPage() {
           error={!!errors.date}
           helperText={errors.date?.message as string}
           fullWidth
+          sx={{ height: '100%' }}
         />
         <Controller
           name="paidBy"

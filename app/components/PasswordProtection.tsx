@@ -60,7 +60,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
         {children}
         <Box
           sx={{
-            position: 'fixed',
+            position: 'absolute',
             bottom: 16,
             right: 16,
             zIndex: 1000,
