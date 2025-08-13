@@ -10,7 +10,7 @@ export default function PayPage() {
       <Card sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <CardMedia
           component="img"
-          src="/paypal-qr.svg"
+          src="/paypal-qr.jpg"
           alt="PayPal QR Code"
           sx={{ height: 300, objectFit: 'contain', p: 2 }}
         />

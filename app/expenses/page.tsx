@@ -117,9 +117,9 @@ export default function ExpensesPage() {
               </ToggleButtonGroup>
             )}
           />
-          <Button type="submit" variant="contained" fullWidth size="large" sx={{ py: 1.5 }}>
-            {t('expenses.add')}
-          </Button>
+                  <Button type="submit" variant="contained" size="large" sx={{ gridColumn: '1 / -1', height: 56 }}>
+          {t('expenses.add')}
+        </Button>
         </Box>
       </Box>
 

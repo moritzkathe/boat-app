@@ -104,9 +104,7 @@ export default function WishlistPage() {
             </ToggleButtonGroup>
           )}
         />
-        <Button type="submit" variant="contained" fullWidth size="large" sx={{ py: 1.5 }}>
-          {t('wishlist.add')}
-        </Button>
+        <Button type="submit" variant="contained" size="large" sx={{ gridColumn: '1 / -1', height: 56 }}>{t('wishlist.add')}</Button>
       </Box>
 
       <Divider />

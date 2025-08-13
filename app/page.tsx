@@ -10,7 +10,7 @@ export default function Home() {
       <Card sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <CardMedia
           component="img"
-          src="/hero.svg"
+          src="/hero.jpg"
           alt="Boot bei Sonnenuntergang"
           sx={{ height: 240, objectFit: 'cover' }}
         />

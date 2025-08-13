@@ -1,0 +1,59 @@
+"use client";
+import { ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { CssBaseline, Container, AppBar, Toolbar, Button, Box, Typography } from "@mui/material";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import { ThemeProvider } from "@mui/material/styles";
+import { t } from "@/lib/i18n";
+import theme from "./theme";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "dayjs/locale/de";
+
+export default function Providers({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AppBar
+        position="sticky"
+        color="inherit"
+        elevation={0}
+        sx={{
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          background: 'rgba(255,255,255,0.8)',
+          backdropFilter: 'saturate(180%) blur(8px)',
+        }}
+      >
+        <Toolbar sx={{ minHeight: 64, px: 2 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: '120px 1fr 120px', alignItems: 'center', width: '100%' }}>
+            <Box sx={{ justifySelf: 'start' }}>
+              {!isHome && (
+                <Button component={Link} href="/" startIcon={<ArrowBackRoundedIcon />} color="primary">
+                  {t('nav.back')}
+                </Button>
+              )}
+            </Box>
+            <Box sx={{ justifySelf: 'center', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img src="/logo.svg" alt="Logo" style={{ width: 48, height: 48, display: 'block' }} />
+              {isHome && (
+                <Typography component={Link} href="/" variant="h6" fontWeight={700} sx={{ color: 'inherit', textDecoration: 'none', letterSpacing: 0.2 }}>
+                  {t('app.title')}
+                </Typography>
+              )}
+            </Box>
+            <Box sx={{ justifySelf: 'end' }}></Box>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+        <Container maxWidth="sm" sx={{ paddingBottom: 6 }}>
+          {children}
+        </Container>
+      </LocalizationProvider>
+    </ThemeProvider>
+  );
+}
