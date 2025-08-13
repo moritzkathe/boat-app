@@ -1,0 +1,45 @@
+// Prisma schema for Shared Boat Management App
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Person {
+  MARIO
+  MORITZ
+}
+
+model BoatEvent {
+  id        String   @id @default(cuid())
+  title     String?
+  start     DateTime
+  end       DateTime?
+  allDay    Boolean  @default(true)
+  owner     Person
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  description String
+  // Amount stored in minor units (cents) to avoid floating point issues
+  amountCents Int
+  date        DateTime
+  paidBy      Person
+  createdAt   DateTime @default(now())
+}
+
+model WishlistItem {
+  id          String   @id @default(cuid())
+  title       String
+  url         String
+  description String?
+  proposedBy  Person
+  createdAt   DateTime @default(now())
+}
