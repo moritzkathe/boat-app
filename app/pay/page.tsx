@@ -1,27 +1,22 @@
 "use client";
-import { Box, Typography, Card, CardContent, CardMedia } from "@mui/material";
-import { t } from "@/lib/i18n";
+import { Box, Card, CardMedia } from "@mui/material";
 
 export default function PayPage() {
   return (
-    <Box sx={{ my: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <Typography variant="h6" fontWeight={600}>{t('home.pay.title')}</Typography>
-      
-      <Card sx={{ borderRadius: 2, overflow: 'hidden' }}>
+    <Box sx={{ my: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+      <Card sx={{ borderRadius: 2, overflow: 'hidden', maxWidth: '100%' }}>
         <CardMedia
           component="img"
           src="/paypal-qr.jpg"
           alt="PayPal QR Code"
-          sx={{ height: 300, objectFit: 'contain', p: 2 }}
+          sx={{ 
+            width: '100%', 
+            maxWidth: 400, 
+            height: 'auto', 
+            objectFit: 'contain',
+            display: 'block'
+          }}
         />
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            {t('home.pay.title')}
-          </Typography>
-          <Typography color="text.secondary">
-            {t('home.pay.subtitle')}
-          </Typography>
-        </CardContent>
       </Card>
     </Box>
   );

@@ -57,10 +57,11 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
   if (isAuthenticated) {
     return (
       <>
+        {children}
         <Box
           sx={{
             position: 'fixed',
-            top: 16,
+            bottom: 16,
             right: 16,
             zIndex: 1000,
           }}
@@ -74,7 +75,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
             Abmelden
           </Button>
         </Box>
-        {children}
       </>
     );
   }
@@ -89,7 +89,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
       PaperProps={{
         sx: {
           borderRadius: 2,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         },
       }}
     >
@@ -102,16 +101,15 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
               width: 80, 
               height: 80, 
               display: 'block', 
-              margin: '0 auto 16px',
-              filter: 'brightness(0) invert(1)'
+              margin: '0 auto 16px'
             }} 
           />
-          <DialogTitle sx={{ color: 'white', pb: 1 }}>
+          <DialogTitle sx={{ pb: 1 }}>
             <Typography variant="h5" fontWeight={600}>
               Cranchi Clipper
             </Typography>
           </DialogTitle>
-          <Typography variant="body1" color="rgba(255,255,255,0.8)" sx={{ mb: 3 }}>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
             Bitte geben Sie das Passwort ein, um fortzufahren
           </Typography>
         </Box>
@@ -126,12 +124,11 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
             variant="outlined"
             sx={{
               '& .MuiOutlinedInput-root': {
-                backgroundColor: 'rgba(255,255,255,0.9)',
                 '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,1)',
+                  backgroundColor: 'rgba(0,0,0,0.02)',
                 },
                 '&.Mui-focused': {
-                  backgroundColor: 'rgba(255,255,255,1)',
+                  backgroundColor: 'rgba(0,0,0,0.02)',
                 },
               },
             }}
@@ -152,16 +149,6 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
             sx={{
               mt: 2,
               py: 1.5,
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              color: 'white',
-              border: '1px solid rgba(255,255,255,0.3)',
-              '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.3)',
-              },
-              '&:disabled': {
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                color: 'rgba(255,255,255,0.5)',
-              },
             }}
           >
             {isLoading ? 'Überprüfe...' : 'Anmelden'}
@@ -170,7 +157,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
 
         <Typography 
           variant="caption" 
-          color="rgba(255,255,255,0.6)" 
+          color="text.secondary" 
           sx={{ mt: 3, display: 'block' }}
         >
           Nur für autorisierte Benutzer

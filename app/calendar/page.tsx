@@ -41,14 +41,7 @@ export default function CalendarPage() {
       .catch(() => setEvents([]));
   }, []);
 
-  const headerToolbar = useMemo(
-    () => ({
-      left: "dayGridMonth,timeGridWeek",
-      center: "title",
-      right: "prev,today,next",
-    }),
-    []
-  );
+
 
   return (
     <Box sx={{ my: 2 }}>
@@ -60,7 +53,11 @@ export default function CalendarPage() {
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        headerToolbar={headerToolbar}
+        headerToolbar={{
+          left: 'dayGridMonth,timeGridWeek',
+          center: 'title',
+          right: 'prev,next'
+        }}
         firstDay={1}
         locales={[deLocale]}
         locale="de"
@@ -75,6 +72,8 @@ export default function CalendarPage() {
         slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
         eventDisplay="block"
         displayEventTime={false}
+        height="auto"
+        titleFormat={{ month: 'short', year: 'numeric' }}
         dateClick={(arg) => {
           if (arg.view.type === 'dayGridMonth') {
             const clicked = new Date(arg.date);
@@ -99,7 +98,6 @@ export default function CalendarPage() {
           setPendingDeleteId(info.event.id as string);
           setConfirmOpen(true);
         }}
-        height="auto"
       />
       <DeleteDialog
         open={confirmOpen}

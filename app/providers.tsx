@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Container, AppBar, Toolbar, Button, Box, Typography } from "@mui/material";
+import { Container, AppBar, Toolbar, Button, Box } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { ThemeProvider } from "@mui/material/styles";
 import { t } from "@/lib/i18n";
@@ -17,14 +17,15 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <AppBar
-        position="sticky"
+        position="fixed"
         color="inherit"
         elevation={0}
         sx={{
           borderBottom: '1px solid',
           borderColor: 'divider',
-          background: 'rgba(255,255,255,0.8)',
+          background: 'rgba(255,255,255,0.95)',
           backdropFilter: 'saturate(180%) blur(8px)',
+          zIndex: 1100,
         }}
       >
         <Toolbar sx={{ minHeight: 64, px: 2 }}>
@@ -36,20 +37,15 @@ export default function Providers({ children }: { children: ReactNode }) {
                 </Button>
               )}
             </Box>
-            <Box sx={{ justifySelf: 'center', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ justifySelf: 'center', display: 'flex', alignItems: 'center' }}>
               <img src="/logo.svg" alt="Logo" style={{ width: 48, height: 48, display: 'block' }} />
-              {isHome && (
-                <Typography component={Link} href="/" variant="h6" fontWeight={700} sx={{ color: 'inherit', textDecoration: 'none', letterSpacing: 0.2 }}>
-                  {t('app.title')}
-                </Typography>
-              )}
             </Box>
             <Box sx={{ justifySelf: 'end' }}></Box>
           </Box>
         </Toolbar>
       </AppBar>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-        <Container maxWidth="sm" sx={{ paddingBottom: 6 }}>
+        <Container maxWidth="sm" sx={{ paddingTop: 8, paddingBottom: 6 }}>
           {children}
         </Container>
       </LocalizationProvider>

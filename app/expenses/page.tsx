@@ -103,6 +103,7 @@ export default function ExpensesPage() {
           {...register("date", { required: t('form.required') as string })}
           error={!!errors.date}
           helperText={errors.date?.message as string}
+          fullWidth
         />
         <Controller
           name="paidBy"
