@@ -62,7 +62,16 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         }
       }
       
-      reset();
+      // Reset form to default values
+      reset({
+        date: new Date().toISOString().slice(0, 10),
+        startHour: String(startDefaultHour).padStart(2, '0'),
+        endHour: String(endDefaultHour).padStart(2, '0'),
+        owner: "MARIO",
+      });
+      
+      // Show success message
+      alert("Termin erfolgreich gebucht!");
       onCreated?.();
     } catch (error) {
       alert("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");

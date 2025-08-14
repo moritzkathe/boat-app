@@ -143,31 +143,19 @@ export async function POST(req: NextRequest) {
     
     const endDate = end ? new Date(end) : new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1 hour
     
-    // Check for overlapping events
+    // Check for overlapping events - simplified logic
     const overlappingEvents = await prisma.boatEvent.findMany({
       where: {
         AND: [
           {
+            // Any overlap condition
             OR: [
-              // New event starts during existing event
+              // Events overlap if they share any time
               {
-                start: { lte: startDate },
-                end: { gt: startDate }
-              },
-              // New event ends during existing event
-              {
-                start: { lt: endDate },
-                end: { gte: endDate }
-              },
-              // New event completely contains existing event
-              {
-                start: { gte: startDate },
-                end: { lte: endDate }
-              },
-              // Existing event completely contains new event
-              {
-                start: { lte: startDate },
-                end: { gte: endDate }
+                AND: [
+                  { start: { lt: endDate } },
+                  { end: { gt: startDate } }
+                ]
               }
             ]
           },
@@ -182,8 +170,21 @@ export async function POST(req: NextRequest) {
     });
     
     console.log('🔍 Checking for overlaps...');
-    console.log('New event:', { start: startDate, end: endDate });
+    console.log('New event:', { 
+      start: startDate.toISOString(), 
+      end: endDate.toISOString(),
+      startLocal: startDate.toLocaleString('de-DE'),
+      endLocal: endDate.toLocaleString('de-DE')
+    });
     console.log('Found overlapping events:', overlappingEvents.length);
+    if (overlappingEvents.length > 0) {
+      console.log('Overlapping events:', overlappingEvents.map(e => ({
+        id: e.id,
+        start: e.start.toISOString(),
+        end: e.end?.toISOString(),
+        owner: e.owner
+      })));
+    }
     
     if (overlappingEvents.length > 0) {
       console.log('❌ Overlap detected! Blocking booking.');
@@ -212,16 +213,8 @@ export async function POST(req: NextRequest) {
       const eventStart = new Date(event.start);
       const eventEnd = new Date(event.end);
       
-      return (
-        // New event starts during existing event
-        (startDate >= eventStart && startDate < eventEnd) ||
-        // New event ends during existing event
-        (endDate > eventStart && endDate <= eventEnd) ||
-        // New event completely contains existing event
-        (startDate <= eventStart && endDate >= eventEnd) ||
-        // Existing event completely contains new event
-        (eventStart <= startDate && eventEnd >= endDate)
-      );
+      // Simplified overlap logic: events overlap if they share any time
+      return eventStart < endDate && eventEnd > startDate;
     });
     
     console.log('🔍 Checking for overlaps in memory...');
