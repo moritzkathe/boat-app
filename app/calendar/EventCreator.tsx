@@ -10,7 +10,6 @@ type FormValues = {
   startHour: string; // "00" - "23"
   endHour: string;   // "00" - "23"
   owner: "MARIO" | "MORITZ";
-  title?: string; // Optional title for the event
 };
 
 export default function EventCreator({ onCreated }: { onCreated?: () => void }) {
@@ -24,13 +23,22 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
       startHour: String(startDefaultHour).padStart(2, '0'),
       endHour: String(endDefaultHour).padStart(2, '0'),
       owner: "MARIO",
-      title: "", // Default empty title
     },
     mode: 'onChange', // Enable real-time validation
   });
 
   // Watch form values for validation
   const watchedValues = watch();
+
+  // Check if all required fields are filled and valid
+  const isFormComplete = () => {
+    return (
+      watchedValues.date && 
+      watchedValues.startHour && 
+      watchedValues.endHour &&
+      parseInt(watchedValues.endHour) > parseInt(watchedValues.startHour)
+    );
+  };
 
   const onSubmit = async (values: FormValues) => {
     // Additional validation
@@ -64,7 +72,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          title: values.title || "", // Send title (empty string if not provided)
+          title: "", // Always send empty title
           start: startIso, 
           end: endIso, 
           owner: values.owner, 
@@ -96,7 +104,6 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         startHour: String(newStartHour).padStart(2, '0'),
         endHour: String(newEndHour).padStart(2, '0'),
         owner: "MARIO",
-        title: "", // Reset title to empty
       });
       
       // Show success message
@@ -109,15 +116,6 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
 
   return (
     <Stack direction="column" spacing={2} component="form" onSubmit={handleSubmit(onSubmit)} sx={{ alignItems: 'stretch' }}>
-      {/* Optional Title Field */}
-      <TextField
-        label="Titel (optional)"
-        {...register("title")}
-        fullWidth
-        placeholder="z.B. Bootsfahrt, Wartung, etc."
-        helperText="Optional: Geben Sie einen Titel für den Termin ein"
-      />
-      
       <Controller
         name="date"
         control={control}
@@ -207,7 +205,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         variant="contained" 
         size="large" 
         fullWidth 
-        disabled={!isValid || parseInt(watchedValues.endHour || '0') <= parseInt(watchedValues.startHour || '0')}
+        disabled={!isFormComplete()}
         sx={{ 
           height: 56,
           minHeight: '56px', // Better touch target
