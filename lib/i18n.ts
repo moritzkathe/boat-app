@@ -31,8 +31,8 @@ const de: NestedDict = {
       subtitle: "Kosten erfassen und aufteilen",
     },
     pay: {
-      title: "QR-Code scannen",
-      subtitle: "",
+      title: "PayPal Code",
+      subtitle: "Code scannen zum Bezahlen",
     },
     status: {
       title: "System Status",
@@ -110,8 +110,8 @@ const en: NestedDict = {
       subtitle: "Log costs and split fairly",
     },
     pay: {
-      title: "Pay via PayPal",
-      subtitle: "Scan the QR code to pay",
+      title: "PayPal Code",
+      subtitle: "Scan code to pay",
     },
     status: {
       title: "System Status",
