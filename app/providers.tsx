@@ -63,7 +63,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         </Toolbar>
       </AppBar>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-        <Container maxWidth="sm" sx={{ paddingTop: 8, paddingBottom: 6 }}>
+        <Container maxWidth="sm" sx={{ paddingTop: 10, paddingBottom: 6 }}>
           {children}
         </Container>
       </LocalizationProvider>

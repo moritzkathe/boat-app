@@ -133,7 +133,10 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
             disablePast
             minDate={dayjs().startOf('day')}
             sx={{ width: '100%' }}
-            slotProps={{ textField: { fullWidth: true, inputProps: { readOnly: true }, sx: { width: '100%' } } }}
+            slotProps={{ 
+              textField: { fullWidth: true, inputProps: { readOnly: true }, sx: { width: '100%' } },
+              popper: { sx: { zIndex: 1300 } }
+            }}
           />
         )}
       />
@@ -146,7 +149,12 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           sx={{ flex: 1 }}
           SelectProps={{
             displayEmpty: true,
-            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`
+            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`,
+            MenuProps: {
+              PaperProps: {
+                sx: { zIndex: 1300 }
+              }
+            }
           }}
         >
           <MenuItem value="" disabled sx={{ display: 'none' }}>
@@ -164,7 +172,12 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           sx={{ flex: 1 }}
           SelectProps={{
             displayEmpty: true,
-            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`
+            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`,
+            MenuProps: {
+              PaperProps: {
+                sx: { zIndex: 1300 }
+              }
+            }
           }}
         >
           <MenuItem value="" disabled sx={{ display: 'none' }}>
