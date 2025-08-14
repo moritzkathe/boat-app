@@ -201,8 +201,8 @@ export default function CalendarPage() {
         }}
       />
       <Stack direction="row" spacing={1} mt={2} alignItems="center" justifyContent="center">
-        <Chip size="small" label={`${t('calendar.mario')} (${t('calendar.primary')})`} sx={{ bgcolor: "#e3f2fd", color: "#0d47a1" }} />
-        <Chip size="small" label={`${t('calendar.moritz')} (${t('calendar.primary')})`} sx={{ bgcolor: "#ffe0b2", color: "#e65100" }} />
+        <Chip size="small" label={t('calendar.mario')} sx={{ bgcolor: "#2196f3", color: "white" }} />
+        <Chip size="small" label={t('calendar.moritz')} sx={{ bgcolor: "#ff9800", color: "white" }} />
       </Stack>
     </Box>
   );

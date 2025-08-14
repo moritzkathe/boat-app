@@ -143,8 +143,38 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
             aria-label={t('creator.owner')}
             sx={{ alignSelf: 'stretch', width: '100%' }}
           >
-            <ToggleButton value="MARIO" sx={{ flex: 1, py: 1.5 }}>{t('calendar.mario')}</ToggleButton>
-            <ToggleButton value="MORITZ" sx={{ flex: 1, py: 1.5 }}>{t('calendar.moritz')}</ToggleButton>
+            <ToggleButton 
+              value="MARIO" 
+              sx={{ 
+                flex: 1, 
+                py: 1.5,
+                '&.Mui-selected': {
+                  backgroundColor: '#2196f3',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: '#1976d2'
+                  }
+                }
+              }}
+            >
+              {t('calendar.mario')}
+            </ToggleButton>
+            <ToggleButton 
+              value="MORITZ" 
+              sx={{ 
+                flex: 1, 
+                py: 1.5,
+                '&.Mui-selected': {
+                  backgroundColor: '#ff9800',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: '#f57c00'
+                  }
+                }
+              }}
+            >
+              {t('calendar.moritz')}
+            </ToggleButton>
           </ToggleButtonGroup>
         )}
       />

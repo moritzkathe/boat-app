@@ -4,11 +4,6 @@ const de: NestedDict = {
   app: {
     title: "Cranchi Clipper",
   },
-  nav: {
-    calendar: "Kalender",
-    expenses: "Ausgaben",
-    back: "Zurück",
-  },
   wishlist: {
     title: "Wunschliste",
     item: "Gegenstand oder Leistung",
@@ -18,6 +13,11 @@ const de: NestedDict = {
     proposedBy: "Vorschlag von",
     add: "Hinzufügen",
     empty: "Noch keine Vorschläge.",
+  },
+  nav: {
+    calendar: "Kalender",
+    expenses: "Ausgaben",
+    back: "Zurück",
   },
   home: {
     headline: "Cranchi Clipper",
@@ -33,10 +33,6 @@ const de: NestedDict = {
     pay: {
       title: "Per PayPal zahlen",
       subtitle: "QR-Code scannen und direkt zahlen",
-    },
-    status: {
-      title: "System Status",
-      subtitle: "Anwendungsgesundheit überwachen",
     },
   },
   calendar: {
@@ -72,28 +68,6 @@ const de: NestedDict = {
       hint: "Der Ausgleich berücksichtigt alle erfassten Ausgaben zu gleichen Teilen.",
     },
   },
-  status: {
-    title: "System Status",
-    subtitle: "Überwachung der Anwendungsgesundheit und Systemleistung",
-    database: "Datenbank",
-    api: "API",
-    build: "Build",
-    performance: "Performance",
-    memory: "Speicher",
-    network: "Netzwerk",
-    databaseDesc: "Verbindung zur Datenbank",
-    apiDesc: "API-Endpunkte Verfügbarkeit",
-    buildDesc: "Letzter Build und Deployment",
-    performanceDesc: "Antwortzeiten und Latenz",
-    memoryDesc: "Speichernutzung und Ressourcen",
-    networkDesc: "Netzwerkverbindung und Sicherheit",
-    autoRefresh: "Status wird alle 30 Sekunden automatisch aktualisiert. Letzte Aktualisierung:",
-    systemInfo: "Systeminformationen",
-    environment: "Umgebung",
-    version: "Version",
-    nodeVersion: "Node.js",
-    framework: "Framework",
-  },
   form: {
     required: "Pflichtfeld",
   },
@@ -116,10 +90,6 @@ const en: NestedDict = {
     pay: {
       title: "Pay via PayPal",
       subtitle: "Scan the QR code to pay",
-    },
-    status: {
-      title: "System Status",
-      subtitle: "Monitor application health",
     },
   },
   calendar: { 
@@ -155,28 +125,6 @@ const en: NestedDict = {
       hint: "Settlement assumes equal split of all recorded expenses.",
     },
   },
-  status: {
-    title: "System Status",
-    subtitle: "Monitor application health and system performance",
-    database: "Database",
-    api: "API",
-    build: "Build",
-    performance: "Performance",
-    memory: "Memory",
-    network: "Network",
-    databaseDesc: "Database connection",
-    apiDesc: "API endpoints availability",
-    buildDesc: "Last build and deployment",
-    performanceDesc: "Response times and latency",
-    memoryDesc: "Memory usage and resources",
-    networkDesc: "Network connectivity and security",
-    autoRefresh: "Status is automatically updated every 30 seconds. Last update:",
-    systemInfo: "System Information",
-    environment: "Environment",
-    version: "Version",
-    nodeVersion: "Node.js",
-    framework: "Framework",
-  },
   form: { required: "Required" },
 };
 
@@ -209,3 +157,7 @@ export function t(key: string): string {
   const fromEn = getFromDict(dictionaries.en, path);
   return fromEn ?? key;
 }
+
+// Removed duplicate flat-key translation table to avoid re-declarations.
+
+

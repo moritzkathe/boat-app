@@ -61,7 +61,7 @@ export async function GET() {
         start: formatLocalDate(weekStart),
         end: formatLocalDate(weekEnd),
         allDay: true,
-        color: isMario ? "#d6ecff" : "#ffe0b2",
+        color: isMario ? "#e3f2fd" : "#fff3e0",
         display: 'background',
       });
       isMario = !isMario;
@@ -81,7 +81,7 @@ export async function GET() {
         start: formatLocalDate(weekStart),
         end: formatLocalDate(weekEnd),
         allDay: true,
-        color: isMario ? "#d6ecff" : "#ffe0b2",
+        color: isMario ? "#e3f2fd" : "#fff3e0",
         display: 'background',
       });
       isMario = !isMario;
@@ -97,7 +97,7 @@ export async function GET() {
       start: e.start.toISOString(),
       end: e.end ? e.end.toISOString() : undefined,
       allDay: e.allDay,
-      color: e.owner === "MARIO" ? "#90caf9" : "#a5d6a7",
+      color: e.owner === "MARIO" ? "#2196f3" : "#ff9800",
       extendedProps: { owner: e.owner },
     })),
     ...memoryEvents.map((e) => ({
@@ -106,7 +106,7 @@ export async function GET() {
       start: e.start,
       end: e.end,
       allDay: e.allDay,
-      color: e.owner === "MARIO" ? "#90caf9" : "#a5d6a7",
+      color: e.owner === "MARIO" ? "#2196f3" : "#ff9800",
       extendedProps: { owner: e.owner },
     })),
   ];
