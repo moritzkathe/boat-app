@@ -134,7 +134,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
             minDate={dayjs().startOf('day')}
             sx={{ width: '100%' }}
             slotProps={{ 
-              textField: { fullWidth: true, inputProps: { readOnly: true }, sx: { width: '100%' } },
+              textField: { fullWidth: true, inputProps: { readOnly: true }, sx: { width: '100%' }, InputLabelProps: { shrink: true } },
               popper: { sx: { zIndex: 1300 } }
             }}
           />
@@ -148,6 +148,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           render={({ field: { value, onChange } }) => (
             <TextField 
               label={t('creator.startTime')} 
+              InputLabelProps={{ shrink: true }}
               select 
               value={value || ""}
               onChange={onChange}
@@ -179,6 +180,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           render={({ field: { value, onChange } }) => (
             <TextField 
               label={t('creator.endTime')} 
+              InputLabelProps={{ shrink: true }}
               select 
               value={value || ""}
               onChange={onChange}
