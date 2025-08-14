@@ -13,15 +13,12 @@ type FormValues = {
 };
 
 export default function EventCreator({ onCreated }: { onCreated?: () => void }) {
-  const now = new Date();
-  const startDefaultHour = Math.min(18, Math.max(8, now.getHours()));
-  const endDefaultHour = Math.min(22, Math.max(11, startDefaultHour + 1));
 
   const { register, handleSubmit, reset, control, watch, formState: { errors, isValid } } = useForm<FormValues>({
     defaultValues: {
       date: new Date().toISOString().slice(0, 10),
-      startHour: String(startDefaultHour).padStart(2, '0'),
-      endHour: String(endDefaultHour).padStart(2, '0'),
+      startHour: "", // No default - user must select
+      endHour: "", // No default - user must select
       owner: "MARIO",
     },
     mode: 'onChange', // Enable real-time validation
@@ -35,7 +32,9 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
     return (
       watchedValues.date && 
       watchedValues.startHour && 
-      watchedValues.endHour &&
+      watchedValues.startHour !== "" &&
+      watchedValues.endHour && 
+      watchedValues.endHour !== "" &&
       parseInt(watchedValues.endHour) > parseInt(watchedValues.startHour)
     );
   };
@@ -96,13 +95,11 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
       
       // Reset form to fresh default values
       const newNow = new Date();
-      const newStartHour = Math.min(18, Math.max(8, newNow.getHours()));
-      const newEndHour = Math.min(22, Math.max(11, newStartHour + 1));
       
       reset({
         date: newNow.toISOString().slice(0, 10),
-        startHour: String(newStartHour).padStart(2, '0'),
-        endHour: String(newEndHour).padStart(2, '0'),
+        startHour: "", // Reset to empty - user must select
+        endHour: "", // Reset to empty - user must select
         owner: "MARIO",
       });
       
@@ -141,12 +138,38 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         )}
       />
       <Stack direction={{ xs: 'row', sm: 'row' }} spacing={2} sx={{ width: '100%' }}>
-        <TextField label={t('creator.startTime')} select {...register("startHour", { required: true })} fullWidth sx={{ flex: 1 }}>
+        <TextField 
+          label={t('creator.startTime')} 
+          select 
+          {...register("startHour", { required: true })} 
+          fullWidth 
+          sx={{ flex: 1 }}
+          SelectProps={{
+            displayEmpty: true,
+            renderValue: (value) => value === "" ? "Zeit wählen" : `${value}:00`
+          }}
+        >
+          <MenuItem value="" disabled sx={{ display: 'none' }}>
+            Zeit wählen
+          </MenuItem>
           {Array.from({ length: 11 }, (_, i) => String(8 + i).padStart(2, '0')).map((h) => (
             <MenuItem key={h} value={h}>{h}:00</MenuItem>
           ))}
         </TextField>
-        <TextField label={t('creator.endTime')} select {...register("endHour", { required: true })} fullWidth sx={{ flex: 1 }}>
+        <TextField 
+          label={t('creator.endTime')} 
+          select 
+          {...register("endHour", { required: true })} 
+          fullWidth 
+          sx={{ flex: 1 }}
+          SelectProps={{
+            displayEmpty: true,
+            renderValue: (value) => value === "" ? "Zeit wählen" : `${value}:00`
+          }}
+        >
+          <MenuItem value="" disabled sx={{ display: 'none' }}>
+            Zeit wählen
+          </MenuItem>
           {Array.from({ length: 14 }, (_, i) => String(9 + i).padStart(2, '0')).map((h) => (
             <MenuItem key={h} value={h}>{h}:00</MenuItem>
           ))}
