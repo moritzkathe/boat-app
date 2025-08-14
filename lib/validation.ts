@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Event validation schema
 export const EventSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100, 'Title too long'),
+  title: z.string().optional(), // Make title optional for calendar events
   start: z.string().datetime('Invalid start date'),
   end: z.string().datetime('Invalid end date'),
   allDay: z.boolean().optional(),

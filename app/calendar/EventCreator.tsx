@@ -10,6 +10,7 @@ type FormValues = {
   startHour: string; // "00" - "23"
   endHour: string;   // "00" - "23"
   owner: "MARIO" | "MORITZ";
+  title?: string; // Optional title for the event
 };
 
 export default function EventCreator({ onCreated }: { onCreated?: () => void }) {
@@ -23,6 +24,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
       startHour: String(startDefaultHour).padStart(2, '0'),
       endHour: String(endDefaultHour).padStart(2, '0'),
       owner: "MARIO",
+      title: "", // Default empty title
     },
     mode: 'onChange', // Enable real-time validation
   });
@@ -47,6 +49,12 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
     const startDate = new Date(`${values.date}T${values.startHour.padStart(2, '0')}:00:00`);
     const endDate = new Date(`${values.date}T${values.endHour.padStart(2, '0')}:00:00`);
     
+    // Validate dates are valid
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      alert("Ungültige Datums-/Zeitangaben. Bitte überprüfen Sie Ihre Eingaben.");
+      return;
+    }
+    
     // Convert to ISO strings while preserving local time
     const startIso = startDate.toISOString();
     const endIso = endDate.toISOString();
@@ -55,7 +63,13 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
       const response = await fetch("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ start: startIso, end: endIso, owner: values.owner, allDay: false }),
+        body: JSON.stringify({ 
+          title: values.title || "", // Send title (empty string if not provided)
+          start: startIso, 
+          end: endIso, 
+          owner: values.owner, 
+          allDay: false 
+        }),
       });
       
       if (!response.ok) {
@@ -82,6 +96,7 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         startHour: String(newStartHour).padStart(2, '0'),
         endHour: String(newEndHour).padStart(2, '0'),
         owner: "MARIO",
+        title: "", // Reset title to empty
       });
       
       // Show success message
@@ -94,6 +109,15 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
 
   return (
     <Stack direction="column" spacing={2} component="form" onSubmit={handleSubmit(onSubmit)} sx={{ alignItems: 'stretch' }}>
+      {/* Optional Title Field */}
+      <TextField
+        label="Titel (optional)"
+        {...register("title")}
+        fullWidth
+        placeholder="z.B. Bootsfahrt, Wartung, etc."
+        helperText="Optional: Geben Sie einen Titel für den Termin ein"
+      />
+      
       <Controller
         name="date"
         control={control}

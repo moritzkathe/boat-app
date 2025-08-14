@@ -126,7 +126,8 @@ export async function POST(req: NextRequest) {
     const validation = validateInput(EventSchema, body);
     
     if (!validation.success) {
-      return NextResponse.json({ error: validation.error }, { status: 400 });
+      console.error('Validation error:', validation.error);
+      return NextResponse.json({ error: `Validation failed: ${validation.error}` }, { status: 400 });
     }
     
     const { title, start, end, allDay, owner } = validation.data;
@@ -188,7 +189,7 @@ export async function POST(req: NextRequest) {
     
     const created = await prisma.boatEvent.create({
       data: {
-        title,
+        title: title || "", // Use empty string if title is undefined
         start: startDate,
         end: endDate,
         allDay: allDay ?? false,
@@ -223,7 +224,7 @@ export async function POST(req: NextRequest) {
     
     const mem: MemoryEvent = {
       id: randomUUID(),
-      title,
+      title: title || "", // Use empty string if title is undefined
       start,
       end,
       allDay: allDay ?? false,
