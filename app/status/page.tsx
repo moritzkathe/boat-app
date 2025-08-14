@@ -23,7 +23,7 @@ import {
   NetworkCheck,
   Security
 } from "@mui/icons-material";
-import { t } from "@/lib/i18n";
+
 
 interface HealthStatus {
   status: 'healthy' | 'warning' | 'error' | 'unknown';
@@ -262,45 +262,45 @@ export default function StatusPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, pt: 2 }}>
       <Alert severity="info" sx={{ mb: 2 }}>
-        {t('status.autoRefresh')} {new Date().toLocaleTimeString('de-DE')}
+        Auto-refresh active - Last updated: {new Date().toLocaleTimeString('en-US')}
       </Alert>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
         <StatusCard
-          title={t('status.database')}
+          title="Database"
           status={systemStatus.database}
           icon={<Storage sx={{ fontSize: 28 }} />}
-          description={t('status.databaseDesc')}
+          description="Database connection and health status"
         />
         <StatusCard
-          title={t('status.api')}
+          title="API Status"
           status={systemStatus.api}
           icon={<NetworkCheck sx={{ fontSize: 28 }} />}
-          description={t('status.apiDesc')}
+          description="API endpoints and service availability"
         />
         <StatusCard
-          title={t('status.build')}
+          title="Build Info"
           status={systemStatus.build}
           icon={<Build sx={{ fontSize: 28 }} />}
-          description={t('status.buildDesc')}
+          description="Last deployment and build information"
         />
         <StatusCard
-          title={t('status.performance')}
+          title="Performance"
           status={systemStatus.performance}
           icon={<Speed sx={{ fontSize: 28 }} />}
-          description={t('status.performanceDesc')}
+          description="Response times and performance metrics"
         />
         <StatusCard
-          title={t('status.memory')}
+          title="Memory Usage"
           status={systemStatus.memory}
           icon={<Memory sx={{ fontSize: 28 }} />}
-          description={t('status.memoryDesc')}
+          description="System memory and resource usage"
         />
         <StatusCard
-          title={t('status.network')}
+          title="Network"
           status={systemStatus.network}
           icon={<Security sx={{ fontSize: 28 }} />}
-          description={t('status.networkDesc')}
+          description="Network connectivity and security"
         />
       </Box>
 
@@ -309,20 +309,20 @@ export default function StatusPage() {
               <Card>
           <CardContent>
             <Typography variant="h6" fontWeight={600} gutterBottom>
-              {t('status.systemInfo')}
+              System Information
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
               <Typography variant="body2" color="text.secondary">
-                <strong>{t('status.environment')}:</strong> Production
+                <strong>Environment:</strong> Production
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                <strong>{t('status.version')}:</strong> 1.0.0
+                <strong>Version:</strong> 1.0.0
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                <strong>{t('status.nodeVersion')}:</strong> 18.x
+                <strong>Node Version:</strong> 18.x
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                <strong>{t('status.framework')}:</strong> Next.js 14
+                <strong>Framework:</strong> Next.js 15
               </Typography>
             </Box>
           </CardContent>
