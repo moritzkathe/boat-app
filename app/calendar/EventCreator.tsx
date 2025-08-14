@@ -141,52 +141,68 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         )}
       />
       <Stack direction={{ xs: 'row', sm: 'row' }} spacing={2} sx={{ width: '100%' }}>
-        <TextField 
-          label={t('creator.startTime')} 
-          select 
-          {...register("startHour", { required: true })} 
-          fullWidth 
-          sx={{ flex: 1 }}
-          SelectProps={{
-            displayEmpty: true,
-            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`,
-            MenuProps: {
-              PaperProps: {
-                sx: { zIndex: 1300 }
-              }
-            }
-          }}
-        >
-          <MenuItem value="" disabled sx={{ display: 'none' }}>
-            {t('creator.selectTime')}
-          </MenuItem>
-          {Array.from({ length: 11 }, (_, i) => String(8 + i).padStart(2, '0')).map((h) => (
-            <MenuItem key={h} value={h}>{h}:00</MenuItem>
-          ))}
-        </TextField>
-        <TextField 
-          label={t('creator.endTime')} 
-          select 
-          {...register("endHour", { required: true })} 
-          fullWidth 
-          sx={{ flex: 1 }}
-          SelectProps={{
-            displayEmpty: true,
-            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`,
-            MenuProps: {
-              PaperProps: {
-                sx: { zIndex: 1300 }
-              }
-            }
-          }}
-        >
-          <MenuItem value="" disabled sx={{ display: 'none' }}>
-            {t('creator.selectTime')}
-          </MenuItem>
-          {Array.from({ length: 14 }, (_, i) => String(9 + i).padStart(2, '0')).map((h) => (
-            <MenuItem key={h} value={h}>{h}:00</MenuItem>
-          ))}
-        </TextField>
+        <Controller
+          name="startHour"
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { value, onChange } }) => (
+            <TextField 
+              label={t('creator.startTime')} 
+              select 
+              value={value || ""}
+              onChange={onChange}
+              fullWidth 
+              sx={{ flex: 1 }}
+              SelectProps={{
+                displayEmpty: true,
+                renderValue: (val) => (!val || val === "") ? t('creator.selectTime') : `${val}:00`,
+                MenuProps: {
+                  PaperProps: {
+                    sx: { zIndex: 1300 }
+                  }
+                }
+              }}
+            >
+              <MenuItem value="" disabled sx={{ display: 'none' }}>
+                {t('creator.selectTime')}
+              </MenuItem>
+              {Array.from({ length: 11 }, (_, i) => String(8 + i).padStart(2, '0')).map((h) => (
+                <MenuItem key={h} value={h}>{h}:00</MenuItem>
+              ))}
+            </TextField>
+          )}
+        />
+        <Controller
+          name="endHour"
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { value, onChange } }) => (
+            <TextField 
+              label={t('creator.endTime')} 
+              select 
+              value={value || ""}
+              onChange={onChange}
+              fullWidth 
+              sx={{ flex: 1 }}
+              SelectProps={{
+                displayEmpty: true,
+                renderValue: (val) => (!val || val === "") ? t('creator.selectTime') : `${val}:00`,
+                MenuProps: {
+                  PaperProps: {
+                    sx: { zIndex: 1300 }
+                  }
+                }
+              }}
+            >
+              <MenuItem value="" disabled sx={{ display: 'none' }}>
+                {t('creator.selectTime')}
+              </MenuItem>
+              {Array.from({ length: 14 }, (_, i) => String(9 + i).padStart(2, '0')).map((h) => (
+                <MenuItem key={h} value={h}>{h}:00</MenuItem>
+              ))}
+            </TextField>
+          )}
+        />
       </Stack>
       <Controller
         name="owner"
