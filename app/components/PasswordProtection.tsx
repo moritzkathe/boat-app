@@ -36,7 +36,7 @@ export default function PasswordProtection({ children }: PasswordProtectionProps
     setError('');
 
     // Simple password check - you can change this password
-    const correctPassword = 'boat2024'; // Change this to your desired password
+    const correctPassword = 'clippy'; // Change this to your desired password
 
     if (password === correctPassword) {
       setIsAuthenticated(true);
