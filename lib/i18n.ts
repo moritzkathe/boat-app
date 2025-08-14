@@ -34,6 +34,24 @@ const de: NestedDict = {
       title: "Per PayPal zahlen",
       subtitle: "QR-Code scannen und direkt zahlen",
     },
+    status: {
+      title: "System Status",
+    },
+  },
+  status: {
+    title: "System Status",
+    subtitle: "Überwachung der Anwendungsgesundheit",
+    uptime: "Laufzeit",
+    memory: "Speichernutzung",
+    responseTime: "Antwortzeit",
+    database: "Datenbank",
+    api: "API Status",
+    lastBuild: "Letzter Build",
+    autoRefresh: "Auto-Refresh aktiv",
+  },
+  backup: {
+    title: "Backup",
+    subtitle: "Datenbank Backup",
   },
   calendar: {
     mario: "Mario",
@@ -91,6 +109,24 @@ const en: NestedDict = {
       title: "Pay via PayPal",
       subtitle: "Scan the QR code to pay",
     },
+    status: {
+      title: "System Status",
+    },
+  },
+  status: {
+    title: "System Status",
+    subtitle: "Application Health Monitoring",
+    uptime: "Uptime",
+    memory: "Memory Usage",
+    responseTime: "Response Time",
+    database: "Database",
+    api: "API Status",
+    lastBuild: "Last Build",
+    autoRefresh: "Auto-refresh active",
+  },
+  backup: {
+    title: "Backup",
+    subtitle: "Database Backup",
   },
   calendar: { 
     mario: "Mario", 

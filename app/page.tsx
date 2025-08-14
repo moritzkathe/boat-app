@@ -120,24 +120,24 @@ export default function Home() {
           >
             {t('home.status.title')}
           </Button>
-          <Button 
-            component={Link} 
-            href="/backup" 
-            variant="text" 
-            size="small"
-            sx={{ 
-              fontSize: '0.75rem',
-              color: 'text.secondary',
-              textTransform: 'none',
-              p: 0.5,
-              minHeight: '44px', // Better touch target
-              '&:active': {
-                backgroundColor: 'rgba(0,0,0,0.1)'
-              }
-            }}
-          >
-            Backup
-          </Button>
+                   <Button
+           component={Link}
+           href="/backup-simple"
+           variant="text"
+           size="small"
+           sx={{
+             fontSize: '0.75rem',
+             color: 'text.secondary',
+             textTransform: 'none',
+             p: 0.5,
+             minHeight: '44px', // Better touch target
+             '&:active': {
+               backgroundColor: 'rgba(0,0,0,0.1)'
+             }
+           }}
+         >
+           Backup
+         </Button>
         </Box>
       </Stack>
     </Box>
