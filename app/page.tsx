@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Box, Stack, Typography, Card, CardMedia, CardContent, CardActionArea, Button } from "@mui/material";
+import { Box, Stack, Typography, Card, CardMedia, CardActionArea, Button } from "@mui/material";
 import { CalendarMonth, Payments, FavoriteBorder, QrCode2 } from "@mui/icons-material";
 import { t } from "@/lib/i18n";
 
@@ -14,14 +14,6 @@ export default function Home() {
           alt="Boot bei Sonnenuntergang"
           sx={{ height: 240, objectFit: 'cover' }}
         />
-        <CardContent>
-          <Typography variant="h4" fontWeight={600} gutterBottom>
-            {t('home.headline')}
-          </Typography>
-          <Typography color="text.secondary">
-            {t('home.tagline')}
-          </Typography>
-        </CardContent>
       </Card>
 
       <Stack direction="column" spacing={2}>
