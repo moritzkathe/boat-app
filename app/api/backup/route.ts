@@ -72,9 +72,9 @@ export async function POST(req: NextRequest) {
                      new Date().toISOString().replace(/[:.]/g, '-').split('T')[1].split('.')[0];
     
     // Fetch all data from database (with fallback for no database)
-    let boatEvents: any[] = [];
-    let expenses: any[] = [];
-    let wishlistItems: any[] = [];
+    let boatEvents: Record<string, unknown>[] = [];
+    let expenses: Record<string, unknown>[] = [];
+    let wishlistItems: Record<string, unknown>[] = [];
     
     try {
       [boatEvents, expenses, wishlistItems] = await Promise.all([
