@@ -85,6 +85,10 @@ const de: NestedDict = {
       moritzOwesMario: "Moritz schuldet Mario",
       hint: "Der Ausgleich berücksichtigt alle erfassten Ausgaben zu gleichen Teilen.",
     },
+    deleteTitle: "Ausgabe löschen",
+    deleteMessage: "Möchtest du diese Ausgabe wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    deleteCancel: "Abbrechen",
+    deleteConfirm: "Löschen",
   },
   form: {
     required: "Pflichtfeld",
@@ -160,6 +164,10 @@ const en: NestedDict = {
       moritzOwesMario: "Moritz owes Mario",
       hint: "Settlement assumes equal split of all recorded expenses.",
     },
+    deleteTitle: "Delete expense",
+    deleteMessage: "Do you really want to delete this expense? This cannot be undone.",
+    deleteCancel: "Cancel",
+    deleteConfirm: "Delete",
   },
   form: { required: "Required" },
 };

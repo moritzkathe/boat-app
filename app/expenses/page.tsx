@@ -4,6 +4,7 @@ import { Box, Button, Divider, Stack, TextField, Typography, InputAdornment, Tog
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useForm, Controller } from "react-hook-form";
 import { t } from "@/lib/i18n";
+import ExpenseDeleteDialog from "./DeleteDialog";
 
 type Expense = {
   id: string;
@@ -28,6 +29,8 @@ export default function ExpensesPage() {
     },
   });
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
   const euro = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
   const fetchExpenses = async () => {
@@ -35,9 +38,23 @@ export default function ExpensesPage() {
     const data = await res.json();
     setExpenses(data.expenses || []);
   };
-  const removeExpense = async (id: string) => {
-    await fetch(`/api/expenses?id=${id}`, { method: 'DELETE' });
-    await fetchExpenses();
+  const removeExpense = (id: string) => {
+    setExpenseToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteExpense = async () => {
+    if (expenseToDelete) {
+      await fetch(`/api/expenses?id=${expenseToDelete}`, { method: 'DELETE' });
+      await fetchExpenses();
+    }
+    setDeleteDialogOpen(false);
+    setExpenseToDelete(null);
+  };
+
+  const cancelDeleteExpense = () => {
+    setDeleteDialogOpen(false);
+    setExpenseToDelete(null);
   };
 
 
@@ -227,6 +244,12 @@ export default function ExpensesPage() {
         <Typography fontWeight={600}>{t('expenses.total')}</Typography>
         <Typography>{euro.format(totalCents / 100)}</Typography>
       </Stack>
+
+      <ExpenseDeleteDialog
+        open={deleteDialogOpen}
+        onClose={cancelDeleteExpense}
+        onConfirm={confirmDeleteExpense}
+      />
     </Box>
   );
 }
