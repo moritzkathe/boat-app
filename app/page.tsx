@@ -69,7 +69,7 @@ export default function Home() {
             </Stack>
           </CardActionArea>
         </Card>
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
           <Button 
             component={Link} 
             href="/status" 
@@ -83,6 +83,20 @@ export default function Home() {
             }}
           >
             {t('home.status.title')}
+          </Button>
+          <Button 
+            component={Link} 
+            href="/backup" 
+            variant="text" 
+            size="small"
+            sx={{ 
+              fontSize: '0.75rem',
+              color: 'text.secondary',
+              textTransform: 'none',
+              p: 0.5
+            }}
+          >
+            Backup
           </Button>
         </Box>
       </Stack>
