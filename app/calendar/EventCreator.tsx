@@ -146,11 +146,11 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           sx={{ flex: 1 }}
           SelectProps={{
             displayEmpty: true,
-            renderValue: (value) => value === "" ? "Zeit wählen" : `${value}:00`
+            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`
           }}
         >
           <MenuItem value="" disabled sx={{ display: 'none' }}>
-            Zeit wählen
+            {t('creator.selectTime')}
           </MenuItem>
           {Array.from({ length: 11 }, (_, i) => String(8 + i).padStart(2, '0')).map((h) => (
             <MenuItem key={h} value={h}>{h}:00</MenuItem>
@@ -164,11 +164,11 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           sx={{ flex: 1 }}
           SelectProps={{
             displayEmpty: true,
-            renderValue: (value) => value === "" ? "Zeit wählen" : `${value}:00`
+            renderValue: (value) => value === "" ? t('creator.selectTime') : `${value}:00`
           }}
         >
           <MenuItem value="" disabled sx={{ display: 'none' }}>
-            Zeit wählen
+            {t('creator.selectTime')}
           </MenuItem>
           {Array.from({ length: 14 }, (_, i) => String(9 + i).padStart(2, '0')).map((h) => (
             <MenuItem key={h} value={h}>{h}:00</MenuItem>

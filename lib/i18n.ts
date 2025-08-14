@@ -68,6 +68,7 @@ const de: NestedDict = {
     endTime: "Endzeit",
     owner: "Wer nutzt das Boot?",
     add: "Reservierung hinzufügen",
+    selectTime: "Zeit wählen",
   },
   expenses: {
     title: "Ausgaben",
@@ -147,6 +148,7 @@ const en: NestedDict = {
     endTime: "End time",
     owner: "Who uses the boat?",
     add: "Add reservation",
+    selectTime: "Select time",
   },
   expenses: {
     title: "Expenses",
