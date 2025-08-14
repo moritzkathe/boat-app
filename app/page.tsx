@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Box, Stack, Typography, Card, CardMedia, CardContent, CardActionArea } from "@mui/material";
+import { Box, Stack, Typography, Card, CardMedia, CardContent, CardActionArea, Button } from "@mui/material";
 import { CalendarMonth, Payments, FavoriteBorder, QrCode2 } from "@mui/icons-material";
 import { t } from "@/lib/i18n";
 
@@ -69,6 +69,22 @@ export default function Home() {
             </Stack>
           </CardActionArea>
         </Card>
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+          <Button 
+            component={Link} 
+            href="/status" 
+            variant="text" 
+            size="small"
+            sx={{ 
+              fontSize: '0.75rem',
+              color: 'text.secondary',
+              textTransform: 'none',
+              p: 0.5
+            }}
+          >
+            {t('home.status.title')}
+          </Button>
+        </Box>
       </Stack>
     </Box>
   );
