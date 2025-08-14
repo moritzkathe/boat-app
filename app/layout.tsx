@@ -56,6 +56,14 @@ export default function RootLayout({
         <meta name="slurp" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
         <meta name="baiduspider" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
         <meta name="yandex" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+        
+        {/* iOS specific meta tags */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Clipper" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.svg" />
+        <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.svg" />
       </head>
       <body className={`${inter.variable}`}>
         <ThemeRegistry>
