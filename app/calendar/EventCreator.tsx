@@ -43,11 +43,11 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
       return;
     }
     
-    // Create dates in local timezone to avoid timezone conversion issues
+    // Create dates in local timezone and preserve local time
     const startDate = new Date(`${values.date}T${values.startHour.padStart(2, '0')}:00:00`);
     const endDate = new Date(`${values.date}T${values.endHour.padStart(2, '0')}:00:00`);
     
-    // Convert to ISO strings for API
+    // Convert to ISO strings while preserving local time
     const startIso = startDate.toISOString();
     const endIso = endDate.toISOString();
     

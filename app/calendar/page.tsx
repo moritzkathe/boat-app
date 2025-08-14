@@ -132,11 +132,19 @@ export default function CalendarPage() {
     };
   }, []);
 
+  const refreshEvents = async () => {
+    try {
+      const response = await fetch("/api/events");
+      const data = await response.json();
+      setEvents(data.events || []);
+    } catch (error) {
+      console.error('Error refreshing events:', error);
+    }
+  };
+
   return (
     <Box sx={{ my: 2 }}>
-      <EventCreator onCreated={() => {
-        fetch("/api/events").then(r => r.json()).then(d => setEvents(d.events || []));
-      }} />
+      <EventCreator onCreated={refreshEvents} />
       <Divider sx={{ my: 2 }} />
       <FullCalendar
         ref={calendarRef}
@@ -191,13 +199,17 @@ export default function CalendarPage() {
       <DeleteDialog
         open={confirmOpen}
         onClose={() => { setConfirmOpen(false); setPendingDeleteId(null); }}
-        onConfirm={() => {
+        onConfirm={async () => {
           if (!pendingDeleteId) return;
-          fetch(`/api/events?id=${pendingDeleteId}`, { method: 'DELETE' })
-            .then(() => fetch('/api/events'))
-            .then((r) => r.json())
-            .then((d) => setEvents(d.events || []))
-            .finally(() => { setConfirmOpen(false); setPendingDeleteId(null); });
+          try {
+            await fetch(`/api/events?id=${pendingDeleteId}`, { method: 'DELETE' });
+            await refreshEvents();
+          } catch (error) {
+            console.error('Error deleting event:', error);
+          } finally {
+            setConfirmOpen(false);
+            setPendingDeleteId(null);
+          }
         }}
       />
       <Stack direction="row" spacing={1} mt={2} alignItems="center" justifyContent="center">
