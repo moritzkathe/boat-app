@@ -71,18 +71,27 @@ export async function POST(req: NextRequest) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0] + '_' + 
                      new Date().toISOString().replace(/[:.]/g, '-').split('T')[1].split('.')[0];
     
-    // Fetch all data from database
-    const [boatEvents, expenses, wishlistItems] = await Promise.all([
-      prisma.boatEvent.findMany({
-        orderBy: { createdAt: 'desc' }
-      }),
-      prisma.expense.findMany({
-        orderBy: { createdAt: 'desc' }
-      }),
-      prisma.wishlistItem.findMany({
-        orderBy: { createdAt: 'desc' }
-      })
-    ]);
+    // Fetch all data from database (with fallback for no database)
+    let boatEvents: any[] = [];
+    let expenses: any[] = [];
+    let wishlistItems: any[] = [];
+    
+    try {
+      [boatEvents, expenses, wishlistItems] = await Promise.all([
+        prisma.boatEvent.findMany({
+          orderBy: { createdAt: 'desc' }
+        }),
+        prisma.expense.findMany({
+          orderBy: { createdAt: 'desc' }
+        }),
+        prisma.wishlistItem.findMany({
+          orderBy: { createdAt: 'desc' }
+        })
+      ]);
+    } catch (dbError) {
+      console.log('⚠️ Database connection failed, creating empty backup files');
+      console.error('Database error:', dbError);
+    }
     
     // Convert to CSV format
     const boatEventsCSV = arrayToCSV(boatEvents, [
