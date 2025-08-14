@@ -62,22 +62,22 @@ export default function BackupPage() {
   const fetchBackupInfo = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/backup?password=${BACKUP_PASSWORD}`);
+      const response = await fetch(`/api/backup/list?password=${BACKUP_PASSWORD}`);
       if (response.ok) {
         const data = await response.json();
         
         // Parse backup files from the response
-        const files: BackupFile[] = data.files?.map((filename: string) => ({
-          name: filename,
-          size: "N/A", // We'll get this from file system
-          date: filename.split('_')[0] + ' ' + filename.split('_')[1]?.replace(/-/g, ':'),
-          url: `/backups/${filename}`
+        const files: BackupFile[] = data.files?.map((file: { name: string; size: string; date: string; url: string }) => ({
+          name: file.name,
+          size: file.size,
+          date: new Date(file.date).toLocaleString('de-DE'),
+          url: file.url
         })) || [];
 
         setBackupInfo({
           files,
-          totalBackups: files.length,
-          lastBackup: files[0]?.date || "Keine Backups"
+          totalBackups: data.totalBackups || 0,
+          lastBackup: data.lastBackup ? new Date(data.lastBackup).toLocaleString('de-DE') : "Keine Backups"
         });
       }
     } catch (error) {
@@ -236,6 +236,7 @@ export default function BackupPage() {
           
           <Alert severity="info" sx={{ mb: 2 }}>
             Es werden automatisch nur die 3 neuesten Backups gespeichert. Ältere werden gelöscht.
+            Automatische Backups werden jeden Sonntag um 2:00 Uhr erstellt.
           </Alert>
 
           {backupInfo?.files && backupInfo.files.length > 0 ? (
