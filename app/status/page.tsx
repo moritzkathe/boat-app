@@ -9,8 +9,7 @@ import {
   Chip,
   Alert,
   CircularProgress,
-  Divider,
-  Grid
+  Divider
 } from "@mui/material";
 import { 
   CheckCircle, 
@@ -241,7 +240,7 @@ export default function StatusPage() {
         <Stack direction="row" spacing={1} alignItems="center">
           <Chip 
             label={status.status.toUpperCase()} 
-            color={getStatusColor(status.status) as any}
+            color={getStatusColor(status.status) as 'success' | 'warning' | 'error' | 'default'}
             size="small"
           />
           <Typography variant="caption" color="text.secondary">
@@ -312,28 +311,20 @@ export default function StatusPage() {
             <Typography variant="h6" fontWeight={600} gutterBottom>
               {t('status.systemInfo')}
             </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color="text.secondary">
-                  <strong>{t('status.environment')}:</strong> Production
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color="text.secondary">
-                  <strong>{t('status.version')}:</strong> 1.0.0
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color="text.secondary">
-                  <strong>{t('status.nodeVersion')}:</strong> 18.x
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color="text.secondary">
-                  <strong>{t('status.framework')}:</strong> Next.js 14
-                </Typography>
-              </Grid>
-            </Grid>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                <strong>{t('status.environment')}:</strong> Production
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>{t('status.version')}:</strong> 1.0.0
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>{t('status.nodeVersion')}:</strong> 18.x
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>{t('status.framework')}:</strong> Next.js 14
+              </Typography>
+            </Box>
           </CardContent>
         </Card>
     </Box>
