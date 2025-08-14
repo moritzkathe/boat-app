@@ -26,7 +26,17 @@ export default function Home() {
 
       <Stack direction="column" spacing={2}>
         <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea component={Link} href="/calendar" sx={{ p: 2 }}>
+          <CardActionArea 
+            component={Link} 
+            href="/calendar" 
+            sx={{ 
+              p: 2,
+              minHeight: '80px', // Better touch target
+              '&:active': {
+                backgroundColor: 'rgba(0,0,0,0.05)'
+              }
+            }}
+          >
             <Stack direction="row" spacing={2} alignItems="center">
               <CalendarMonth color="primary" sx={{ fontSize: 36 }} />
               <Box>
@@ -37,7 +47,17 @@ export default function Home() {
           </CardActionArea>
         </Card>
         <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea component={Link} href="/expenses" sx={{ p: 2 }}>
+          <CardActionArea 
+            component={Link} 
+            href="/expenses" 
+            sx={{ 
+              p: 2,
+              minHeight: '80px', // Better touch target
+              '&:active': {
+                backgroundColor: 'rgba(0,0,0,0.05)'
+              }
+            }}
+          >
             <Stack direction="row" spacing={2} alignItems="center">
               <Payments color="primary" sx={{ fontSize: 36 }} />
               <Box>
@@ -48,7 +68,17 @@ export default function Home() {
           </CardActionArea>
         </Card>
         <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea component={Link} href="/wishlist" sx={{ p: 2 }}>
+          <CardActionArea 
+            component={Link} 
+            href="/wishlist" 
+            sx={{ 
+              p: 2,
+              minHeight: '80px', // Better touch target
+              '&:active': {
+                backgroundColor: 'rgba(0,0,0,0.05)'
+              }
+            }}
+          >
             <Stack direction="row" spacing={2} alignItems="center">
               <FavoriteBorder color="primary" sx={{ fontSize: 36 }} />
               <Box>
@@ -59,7 +89,17 @@ export default function Home() {
           </CardActionArea>
         </Card>
         <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea component={Link} href="/pay" sx={{ p: 2 }}>
+          <CardActionArea 
+            component={Link} 
+            href="/pay" 
+            sx={{ 
+              p: 2,
+              minHeight: '80px', // Better touch target
+              '&:active': {
+                backgroundColor: 'rgba(0,0,0,0.05)'
+              }
+            }}
+          >
             <Stack direction="row" spacing={2} alignItems="center">
               <QrCode2 color="primary" sx={{ fontSize: 36 }} />
               <Box>
@@ -69,7 +109,7 @@ export default function Home() {
             </Stack>
           </CardActionArea>
         </Card>
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
           <Button 
             component={Link} 
             href="/status" 
@@ -79,7 +119,11 @@ export default function Home() {
               fontSize: '0.75rem',
               color: 'text.secondary',
               textTransform: 'none',
-              p: 0.5
+              p: 0.5,
+              minHeight: '44px', // Better touch target
+              '&:active': {
+                backgroundColor: 'rgba(0,0,0,0.1)'
+              }
             }}
           >
             {t('home.status.title')}
@@ -93,7 +137,11 @@ export default function Home() {
               fontSize: '0.75rem',
               color: 'text.secondary',
               textTransform: 'none',
-              p: 0.5
+              p: 0.5,
+              minHeight: '44px', // Better touch target
+              '&:active': {
+                backgroundColor: 'rgba(0,0,0,0.1)'
+              }
             }}
           >
             Backup

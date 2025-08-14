@@ -8,7 +8,7 @@ import deLocale from "@fullcalendar/core/locales/de";
 import { Box, Chip, Stack, Divider } from "@mui/material";
 import EventCreator from "./EventCreator";
 import DeleteDialog from "./DeleteDialog";
-import { t } from "@/lib/i18n";
+import { t } from "../../lib/i18n";
 
 type EventItem = {
   id: string;
@@ -98,6 +98,29 @@ export default function CalendarPage() {
       }
       .fc-today-button:hover {
         background-color: #e3f2fd !important;
+      }
+      /* Mobile touch improvements */
+      .fc-button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        touch-action: manipulation !important;
+      }
+      .fc-button:active {
+        transform: scale(0.95) !important;
+      }
+      .fc-event {
+        min-height: 24px !important;
+        touch-action: manipulation !important;
+      }
+      .fc-event:active {
+        opacity: 0.8 !important;
+      }
+      .fc-daygrid-day {
+        min-height: 60px !important;
+      }
+      .fc-timegrid-slot {
+        min-height: 40px !important;
+      }
         border-color: #1e88e5 !important;
       }
     `;

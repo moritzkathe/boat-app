@@ -3,7 +3,7 @@ import { Button, MenuItem, Stack, TextField, ToggleButton, ToggleButtonGroup } f
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useForm, Controller } from "react-hook-form";
-import { t } from "@/lib/i18n";
+import { t } from "../../lib/i18n";
 
 type FormValues = {
   date: string;
@@ -17,19 +17,29 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
   const startDefaultHour = Math.min(18, Math.max(8, now.getHours()));
   const endDefaultHour = Math.min(22, Math.max(11, startDefaultHour + 1));
 
-  const { register, handleSubmit, reset, control } = useForm<FormValues>({
+  const { register, handleSubmit, reset, control, watch, formState: { errors, isValid } } = useForm<FormValues>({
     defaultValues: {
       date: new Date().toISOString().slice(0, 10),
       startHour: String(startDefaultHour).padStart(2, '0'),
       endHour: String(endDefaultHour).padStart(2, '0'),
       owner: "MARIO",
     },
+    mode: 'onChange', // Enable real-time validation
   });
 
+  // Watch form values for validation
+  const watchedValues = watch();
+
   const onSubmit = async (values: FormValues) => {
-    // Validate that end time is after start time
+    // Additional validation
     if (parseInt(values.endHour) <= parseInt(values.startHour)) {
       alert("Die Endzeit muss nach der Startzeit liegen.");
+      return;
+    }
+
+    // Validate minimum booking duration (at least 1 hour)
+    if (parseInt(values.endHour) - parseInt(values.startHour) < 1) {
+      alert("Die Buchung muss mindestens 1 Stunde dauern.");
       return;
     }
     
@@ -62,11 +72,15 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
         }
       }
       
-      // Reset form to default values
+      // Reset form to fresh default values
+      const newNow = new Date();
+      const newStartHour = Math.min(18, Math.max(8, newNow.getHours()));
+      const newEndHour = Math.min(22, Math.max(11, newStartHour + 1));
+      
       reset({
-        date: new Date().toISOString().slice(0, 10),
-        startHour: String(startDefaultHour).padStart(2, '0'),
-        endHour: String(endDefaultHour).padStart(2, '0'),
+        date: newNow.toISOString().slice(0, 10),
+        startHour: String(newStartHour).padStart(2, '0'),
+        endHour: String(newEndHour).padStart(2, '0'),
         owner: "MARIO",
       });
       
@@ -134,7 +148,22 @@ export default function EventCreator({ onCreated }: { onCreated?: () => void }) 
           </ToggleButtonGroup>
         )}
       />
-      <Button type="submit" variant="contained" size="large" fullWidth sx={{ height: 56 }}>{t('creator.add')}</Button>
+      <Button 
+        type="submit" 
+        variant="contained" 
+        size="large" 
+        fullWidth 
+        disabled={!isValid || parseInt(watchedValues.endHour || '0') <= parseInt(watchedValues.startHour || '0')}
+        sx={{ 
+          height: 56,
+          minHeight: '56px', // Better touch target
+          '&:active': {
+            backgroundColor: 'primary.dark'
+          }
+        }}
+      >
+        {t('creator.add')}
+      </Button>
     </Stack>
   );
 }

@@ -143,21 +143,14 @@ export async function POST(req: NextRequest) {
     
     const endDate = end ? new Date(end) : new Date(startDate.getTime() + 60 * 60 * 1000); // Default 1 hour
     
-    // Check for overlapping events - simplified logic
+    // Check for overlapping events - improved logic
     const overlappingEvents = await prisma.boatEvent.findMany({
       where: {
         AND: [
           {
-            // Any overlap condition
-            OR: [
-              // Events overlap if they share any time
-              {
-                AND: [
-                  { start: { lt: endDate } },
-                  { end: { gt: startDate } }
-                ]
-              }
-            ]
+            // Events overlap if they share any time
+            start: { lt: endDate },
+            end: { gt: startDate }
           },
           {
             // Exclude background events (weekly blocks)
