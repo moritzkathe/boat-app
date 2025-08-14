@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { addCorsHeaders } from '@/lib/cors';
 
 export async function GET() {
   try {
@@ -31,9 +32,11 @@ export async function GET() {
       }
     };
 
-    return NextResponse.json(healthData, { status: 200 });
+    const response = NextResponse.json(healthData, { status: 200 });
+    return addCorsHeaders(response);
   } catch (error) {
-    return NextResponse.json(
+    console.error('Health check error:', error);
+    const response = NextResponse.json(
       { 
         status: 'error', 
         message: 'Health check failed',
@@ -41,5 +44,6 @@ export async function GET() {
       }, 
       { status: 500 }
     );
+    return addCorsHeaders(response);
   }
 }
