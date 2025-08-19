@@ -39,25 +39,34 @@ export default function PayPalBalanceCard() {
   const updateBalance = async () => {
     try {
       setUpdating(true);
-      // Convert German number format (comma as decimal separator) to standard format
+      setError(null); // Clear any previous errors
+      
+      // Validate and convert German number format
       const normalizedBalance = editBalance.replace(',', '.');
+      const balanceValue = parseFloat(normalizedBalance);
+      
+      if (isNaN(balanceValue) || balanceValue < 0) {
+        throw new Error("Bitte geben Sie einen gültigen Betrag ein");
+      }
+      
       const response = await fetch("/api/paypal-balance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          balance: parseFloat(normalizedBalance)
+          balance: balanceValue
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update balance");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Fehler beim Aktualisieren des Guthabens");
       }
 
       const updatedBalance = await response.json();
       setBalance(updatedBalance);
       setEditDialogOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update balance");
+      setError(err instanceof Error ? err.message : "Fehler beim Aktualisieren des Guthabens");
     } finally {
       setUpdating(false);
     }
@@ -174,6 +183,11 @@ export default function PayPalBalanceCard() {
               placeholder="0,00"
               fullWidth
             />
+            {error && (
+              <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
           </Box>
         </DialogContent>
         <DialogActions>
@@ -183,7 +197,7 @@ export default function PayPalBalanceCard() {
           <Button 
             onClick={updateBalance} 
             variant="contained" 
-            disabled={updating || !editBalance || parseFloat(editBalance.replace(',', '.')) < 0}
+            disabled={updating || !editBalance || isNaN(parseFloat(editBalance.replace(',', '.'))) || parseFloat(editBalance.replace(',', '.')) < 0}
           >
             {updating ? 'Wird aktualisiert...' : 'Guthaben aktualisieren'}
           </Button>
