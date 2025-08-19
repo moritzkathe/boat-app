@@ -208,10 +208,6 @@ export default function ExpensesPage() {
 
       <Divider />
 
-      <PayPalBalanceCard />
-
-      <Divider />
-
       <Paper
         variant="outlined"
         sx={{
@@ -242,6 +238,10 @@ export default function ExpensesPage() {
           {t('expenses.balance.hint')}
         </Typography>
       </Paper>
+
+      <Divider />
+
+      <PayPalBalanceCard />
 
       <Divider />
 
