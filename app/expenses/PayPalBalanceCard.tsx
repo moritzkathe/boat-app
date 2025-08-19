@@ -8,6 +8,8 @@ type PayPalBalance = {
   currency: string;
   lastUpdated: string;
   accountEmail: string;
+  isMock?: boolean;
+  error?: string;
 };
 
 export default function PayPalBalanceCard() {
@@ -96,9 +98,9 @@ export default function PayPalBalanceCard() {
             </Typography>
           </Box>
           <Chip 
-            label="Live" 
+            label={balance.isMock ? "Demo" : "Live"} 
             size="small" 
-            color="success" 
+            color={balance.isMock ? "warning" : "success"} 
             variant="outlined"
             sx={{ fontSize: '0.7rem' }}
           />
@@ -115,6 +117,11 @@ export default function PayPalBalanceCard() {
         <Typography variant="caption" color="text.secondary" display="block">
           Last updated: {formatDate(balance.lastUpdated)}
         </Typography>
+        {balance.isMock && (
+          <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>
+            Demo mode - Add PayPal credentials to see real balance
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );
