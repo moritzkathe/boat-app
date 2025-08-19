@@ -39,7 +39,7 @@ export default function Providers({ children }: { children: ReactNode }) {
           <Box sx={{ display: 'grid', gridTemplateColumns: '120px 1fr 120px', alignItems: 'center', width: '100%' }}>
             <Box sx={{ justifySelf: 'start' }}>
               {!isHome && (
-                <Button component={Link} href="/" startIcon={<ArrowBackRoundedIcon />} color="primary">
+                <Button component={Link} href="/" startIcon={<ArrowBackRoundedIcon />} color="primary" sx={{ fontSize: '0.875rem' }}>
                   {t('nav.back')}
                 </Button>
               )}
@@ -54,7 +54,7 @@ export default function Providers({ children }: { children: ReactNode }) {
                 variant="text"
                 size="small"
                 onClick={handleLogout}
-                sx={{ fontSize: '0.75rem' }}
+                sx={{ fontSize: '0.875rem' }}
               >
                 Abmelden
               </Button>
