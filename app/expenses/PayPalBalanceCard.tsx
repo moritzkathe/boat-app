@@ -18,7 +18,6 @@ export default function PayPalBalanceCard() {
   const [error, setError] = useState<string | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editBalance, setEditBalance] = useState<string>('');
-  const [editEmail, setEditEmail] = useState<string>('');
   const [updating, setUpdating] = useState(false);
 
   const fetchBalance = async () => {
@@ -40,12 +39,13 @@ export default function PayPalBalanceCard() {
   const updateBalance = async () => {
     try {
       setUpdating(true);
+      // Convert German number format (comma as decimal separator) to standard format
+      const normalizedBalance = editBalance.replace(',', '.');
       const response = await fetch("/api/paypal-balance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          balance: parseFloat(editBalance),
-          accountEmail: editEmail
+          balance: parseFloat(normalizedBalance)
         }),
       });
 
@@ -65,8 +65,8 @@ export default function PayPalBalanceCard() {
 
   const handleEditClick = () => {
     if (balance) {
-      setEditBalance(balance.balance.toString());
-      setEditEmail(balance.accountEmail);
+      // Format balance for German display (comma as decimal separator)
+      setEditBalance(balance.balance.toString().replace('.', ','));
       setEditDialogOpen(true);
     }
   };
@@ -149,11 +149,7 @@ export default function PayPalBalanceCard() {
           </Typography>
           
           <Typography variant="caption" color="text.secondary" display="block">
-            Konto: {balance.accountEmail}
-          </Typography>
-          
-          <Typography variant="caption" color="text.secondary" display="block">
-            Zuletzt aktualisiert: {formatDate(balance.lastUpdated)}
+            {balance.balance === 0 ? 'Aktualisierung erforderlich' : `Zuletzt aktualisiert: ${formatDate(balance.lastUpdated)}`}
           </Typography>
           
           <Typography variant="caption" color="primary" display="block" sx={{ mt: 0.5, fontStyle: 'italic' }}>
@@ -169,20 +165,13 @@ export default function PayPalBalanceCard() {
           <Box sx={{ pt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               label="PayPal Guthaben"
-              type="number"
+              type="text"
               value={editBalance}
               onChange={(e) => setEditBalance(e.target.value)}
               InputProps={{
                 startAdornment: <InputAdornment position="start">€</InputAdornment>,
               }}
-              inputProps={{ step: "0.01", min: "0" }}
-              fullWidth
-            />
-            <TextField
-              label="PayPal E-Mail"
-              type="email"
-              value={editEmail}
-              onChange={(e) => setEditEmail(e.target.value)}
+              placeholder="0,00"
               fullWidth
             />
           </Box>
@@ -194,7 +183,7 @@ export default function PayPalBalanceCard() {
           <Button 
             onClick={updateBalance} 
             variant="contained" 
-            disabled={updating || !editBalance || parseFloat(editBalance) < 0}
+            disabled={updating || !editBalance || parseFloat(editBalance.replace(',', '.')) < 0}
           >
             {updating ? 'Wird aktualisiert...' : 'Guthaben aktualisieren'}
           </Button>

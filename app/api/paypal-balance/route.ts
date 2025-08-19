@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 // In-memory storage (in production, you'd use a database)
 let paypalBalance = {
-  balance: 125.50,
+  balance: 0.0,
   currency: 'EUR',
   lastUpdated: new Date().toISOString(),
   accountEmail: 'your-paypal@example.com'
