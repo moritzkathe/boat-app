@@ -1,5 +1,18 @@
 import { NextResponse } from 'next/server';
 
+// PayPal API response types
+interface PayPalBalanceItem {
+  currency: string;
+  total_balance: {
+    value: string;
+    currency: string;
+  };
+}
+
+interface PayPalBalanceResponse {
+  balances?: PayPalBalanceItem[];
+}
+
 export async function GET() {
   try {
     // PayPal Sandbox API configuration
@@ -55,10 +68,10 @@ export async function GET() {
       throw new Error('Failed to get PayPal balance');
     }
 
-    const balanceData = await balanceResponse.json();
+    const balanceData: PayPalBalanceResponse = await balanceResponse.json();
     
     // Extract EUR balance (or first available currency)
-    const eurBalance = balanceData.balances?.find((b: any) => b.currency === 'EUR') || 
+    const eurBalance = balanceData.balances?.find((b: PayPalBalanceItem) => b.currency === 'EUR') || 
                       balanceData.balances?.[0] || 
                       { total_balance: { value: '0.00', currency: 'EUR' } };
 
