@@ -84,45 +84,43 @@ export default function PayPalBalanceCard() {
   }
 
   return (
-    <Card sx={{ 
-      borderRadius: 2, 
-      bgcolor: 'rgba(25,118,210,0.08)',
-      border: '1px solid rgba(25,118,210,0.2)'
-    }}>
-      <CardContent sx={{ py: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Card sx={{ 
+        borderRadius: 2, 
+        bgcolor: 'rgba(25,118,210,0.08)',
+        border: '1px solid rgba(25,118,210,0.2)'
+      }}>
+        <CardContent sx={{ py: 2, textAlign: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1, gap: 1 }}>
             <AccountBalanceWallet color="primary" sx={{ fontSize: 20 }} />
             <Typography variant="subtitle2" fontWeight={600} color="primary">
               PayPal Balance
             </Typography>
+            <Chip 
+              label={balance.isMock ? "Demo" : "Live"} 
+              size="small" 
+              color={balance.isMock ? "warning" : "success"} 
+              variant="outlined"
+              sx={{ fontSize: '0.7rem' }}
+            />
           </Box>
-          <Chip 
-            label={balance.isMock ? "Demo" : "Live"} 
-            size="small" 
-            color={balance.isMock ? "warning" : "success"} 
-            variant="outlined"
-            sx={{ fontSize: '0.7rem' }}
-          />
-        </Box>
-        
-        <Typography variant="h5" fontWeight={700} color="primary" sx={{ mb: 0.5 }}>
-          {formatCurrency(balance.balance, balance.currency)}
-        </Typography>
-        
-        <Typography variant="caption" color="text.secondary" display="block">
-          Account: {balance.accountEmail}
-        </Typography>
-        
-        <Typography variant="caption" color="text.secondary" display="block">
-          Last updated: {formatDate(balance.lastUpdated)}
-        </Typography>
-        {balance.isMock && (
-          <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>
-            Demo mode - Add PayPal credentials to see real balance
+          
+          <Typography variant="h5" fontWeight={700} color="primary" sx={{ mb: 0.5 }}>
+            {formatCurrency(balance.balance, balance.currency)}
           </Typography>
-        )}
-      </CardContent>
-    </Card>
+          
+          <Typography variant="caption" color="text.secondary" display="block">
+            Account: {balance.accountEmail}
+          </Typography>
+          
+          <Typography variant="caption" color="text.secondary" display="block">
+            Last updated: {formatDate(balance.lastUpdated)}
+          </Typography>
+          {balance.isMock && (
+            <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>
+              Demo mode - Add PayPal credentials to see real balance
+            </Typography>
+          )}
+        </CardContent>
+      </Card>
   );
 }
