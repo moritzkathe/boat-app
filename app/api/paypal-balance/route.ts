@@ -24,10 +24,13 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching PayPal balance:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch PayPal balance' },
-      { status: 500 }
-    );
+    // Fallback to default if database is not ready
+    return NextResponse.json({
+      balance: 0.0,
+      currency: 'EUR',
+      lastUpdated: new Date().toISOString(),
+      error: 'Database not ready, using default'
+    });
   }
 }
 
@@ -59,7 +62,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error updating PayPal balance:', error);
     return NextResponse.json(
-      { error: 'Failed to update PayPal balance' },
+      { 
+        error: 'Failed to update PayPal balance',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
