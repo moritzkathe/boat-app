@@ -138,12 +138,10 @@ export default function PayPalBalanceCard() {
         onClick={handleEditClick}
       >
         <CardContent sx={{ py: 2, textAlign: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1, gap: 1 }}>
-            <AccountBalanceWallet color="primary" sx={{ fontSize: 20 }} />
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
             <Typography variant="subtitle2" fontWeight={600} color="primary">
-              PayPal Balance
+              PayPal Guthaben
             </Typography>
-            <Edit color="primary" sx={{ fontSize: 16 }} />
           </Box>
           
           <Typography variant="h5" fontWeight={700} color="primary" sx={{ mb: 0.5 }}>
@@ -151,26 +149,26 @@ export default function PayPalBalanceCard() {
           </Typography>
           
           <Typography variant="caption" color="text.secondary" display="block">
-            Account: {balance.accountEmail}
+            Konto: {balance.accountEmail}
           </Typography>
           
           <Typography variant="caption" color="text.secondary" display="block">
-            Last updated: {formatDate(balance.lastUpdated)}
+            Zuletzt aktualisiert: {formatDate(balance.lastUpdated)}
           </Typography>
           
           <Typography variant="caption" color="primary" display="block" sx={{ mt: 0.5, fontStyle: 'italic' }}>
-            Click to edit balance
+            Klicken zum Bearbeiten
           </Typography>
         </CardContent>
       </Card>
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Update PayPal Balance</DialogTitle>
+        <DialogTitle>PayPal Guthaben aktualisieren</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
-              label="PayPal Balance"
+              label="PayPal Guthaben"
               type="number"
               value={editBalance}
               onChange={(e) => setEditBalance(e.target.value)}
@@ -181,7 +179,7 @@ export default function PayPalBalanceCard() {
               fullWidth
             />
             <TextField
-              label="PayPal Email"
+              label="PayPal E-Mail"
               type="email"
               value={editEmail}
               onChange={(e) => setEditEmail(e.target.value)}
@@ -191,14 +189,14 @@ export default function PayPalBalanceCard() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditDialogOpen(false)} disabled={updating}>
-            Cancel
+            Abbrechen
           </Button>
           <Button 
             onClick={updateBalance} 
             variant="contained" 
             disabled={updating || !editBalance || parseFloat(editBalance) < 0}
           >
-            {updating ? 'Updating...' : 'Update Balance'}
+            {updating ? 'Wird aktualisiert...' : 'Guthaben aktualisieren'}
           </Button>
         </DialogActions>
       </Dialog>
