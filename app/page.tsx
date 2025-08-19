@@ -11,7 +11,7 @@ export default function Home() {
         <CardMedia
           component="img"
           src="/hero.jpg"
-          alt="Boot bei Sonnenuntergang"
+          alt="Boat at sunset - Updated for deployment"
           sx={{ height: 240, objectFit: 'cover' }}
         />
       </Card>
