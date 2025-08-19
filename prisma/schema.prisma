@@ -44,4 +44,12 @@ model WishlistItem {
   createdAt   DateTime @default(now())
 }
 
+model PayPalBalance {
+  id          String   @id @default(cuid())
+  balance     Float    // Store as float for decimal precision
+  currency    String   @default("EUR")
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
 
