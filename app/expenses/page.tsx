@@ -5,6 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useForm, Controller } from "react-hook-form";
 import { t } from "@/lib/i18n";
 import ExpenseDeleteDialog from "./DeleteDialog";
+import PayPalBalanceCard from "./PayPalBalanceCard";
 
 type Expense = {
   id: string;
@@ -204,6 +205,10 @@ export default function ExpensesPage() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Divider />
+
+      <PayPalBalanceCard />
 
       <Divider />
 
