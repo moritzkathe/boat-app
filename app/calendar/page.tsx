@@ -45,6 +45,10 @@ export default function CalendarPage() {
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
+      /* === Design tokens === */
+      /* ink: #26251e | canvas: #f7f7f4 | canvas-soft: #fafaf7 */
+      /* hairline: #e6e5e0 | muted: #807d72 | primary: #f54e00 */
+
       .fc-header-toolbar {
         flex-direction: column !important;
         gap: 8px !important;
@@ -52,65 +56,97 @@ export default function CalendarPage() {
       .fc-header-toolbar .fc-toolbar-chunk:first-child {
         order: 1;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1rem;
         font-weight: 600;
-        color: #1e88e5;
+        letter-spacing: -0.01em;
+        color: #26251e;
       }
       .fc-header-toolbar .fc-toolbar-chunk:last-child {
         order: 2;
         display: flex;
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
       }
       .fc-button {
         background-color: #ffffff !important;
-        border-color: #e0e0e0 !important;
-        color: #666666 !important;
+        border-color: #e6e5e0 !important;
+        color: #807d72 !important;
         font-weight: 500 !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-        transition: all 0.2s ease !important;
+        font-size: 0.8125rem !important;
+        box-shadow: none !important;
+        border-radius: 8px !important;
+        transition: background-color 0.15s ease, color 0.15s ease !important;
       }
       .fc-button:hover {
-        background-color: #f8f9fa !important;
-        border-color: #1e88e5 !important;
-        color: #1e88e5 !important;
-        box-shadow: 0 2px 6px rgba(30,136,229,0.2) !important;
+        background-color: #fafaf7 !important;
+        border-color: #cfcdc4 !important;
+        color: #26251e !important;
+        box-shadow: none !important;
       }
-      .fc-button-active {
-        background-color: #1e88e5 !important;
-        border-color: #1e88e5 !important;
-        color: white !important;
-        box-shadow: 0 2px 8px rgba(30,136,229,0.3) !important;
+      .fc-button-active, .fc-button-primary:not(:disabled).fc-button-active {
+        background-color: #26251e !important;
+        border-color: #26251e !important;
+        color: #f7f7f4 !important;
+        box-shadow: none !important;
       }
       .fc-prev-button, .fc-next-button {
-        background-color: #1e88e5 !important;
-        border-color: #1e88e5 !important;
-        color: white !important;
+        background-color: #26251e !important;
+        border-color: #26251e !important;
+        color: #f7f7f4 !important;
       }
       .fc-prev-button:hover, .fc-next-button:hover {
-        background-color: #1565c0 !important;
-        border-color: #1565c0 !important;
+        background-color: #3d3c34 !important;
+        border-color: #3d3c34 !important;
       }
       .fc-today-button {
-        background-color: #f5f5f5 !important;
-        border-color: #e0e0e0 !important;
-        color: #1e88e5 !important;
+        background-color: #f7f7f4 !important;
+        border-color: #e6e5e0 !important;
+        color: #26251e !important;
       }
       .fc-today-button:hover {
-        background-color: #e3f2fd !important;
+        background-color: #efeee8 !important;
       }
-      /* Mobile touch improvements */
+      /* Calendar grid */
+      .fc-theme-standard td, .fc-theme-standard th {
+        border-color: #efeee8 !important;
+      }
+      .fc-col-header-cell {
+        font-size: 0.6875rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+        color: #807d72 !important;
+        background-color: #fafaf7 !important;
+        padding: 8px 0 !important;
+      }
+      .fc-daygrid-day-number {
+        color: #5a5852 !important;
+        font-size: 0.8125rem !important;
+        font-weight: 400 !important;
+      }
+      .fc-day-today {
+        background-color: rgba(245,78,0,0.04) !important;
+      }
+      .fc-day-today .fc-daygrid-day-number {
+        color: #f54e00 !important;
+        font-weight: 600 !important;
+      }
+      /* Mobile touch */
       .fc-button {
         min-height: 44px !important;
         min-width: 44px !important;
         touch-action: manipulation !important;
       }
       .fc-button:active {
-        transform: scale(0.95) !important;
+        transform: scale(0.97) !important;
       }
       .fc-event {
         min-height: 24px !important;
         touch-action: manipulation !important;
+        border-radius: 4px !important;
+        border: none !important;
+        font-size: 0.8125rem !important;
+        font-weight: 500 !important;
       }
       .fc-event:active {
         opacity: 0.8 !important;
@@ -120,8 +156,6 @@ export default function CalendarPage() {
       }
       .fc-timegrid-slot {
         min-height: 40px !important;
-      }
-        border-color: #1e88e5 !important;
       }
     `;
     document.head.appendChild(style);

@@ -4,6 +4,7 @@ import { Box, Button, Divider, Stack, TextField, Typography, InputAdornment, Tog
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useForm, Controller } from "react-hook-form";
 import { t } from "@/lib/i18n";
+import { dt } from "@/app/theme";
 import ExpenseDeleteDialog from "./DeleteDialog";
 import PayPalBalanceCard from "./PayPalBalanceCard";
 
@@ -211,30 +212,50 @@ export default function ExpensesPage() {
       <Paper
         variant="outlined"
         sx={{
-          p: 2,
+          p: '20px 24px',
           textAlign: 'center',
-          bgcolor:
-            marioBalance === moritzBalance
-              ? 'rgba(76,175,80,0.08)'
-              : 'rgba(30,136,229,0.08)',
-          borderRadius: 2,
+          backgroundColor: marioBalance === moritzBalance
+            ? `rgba(31,138,101,0.05)`
+            : dt.surfaceCard,
+          borderColor: marioBalance === moritzBalance
+            ? `rgba(31,138,101,0.2)`
+            : dt.hairline,
         }}
       >
-        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+        <Typography sx={{
+          fontSize: '0.6875rem',
+          fontWeight: 600,
+          letterSpacing: '0.88px',
+          textTransform: 'uppercase',
+          color: dt.muted,
+          mb: '8px',
+        }}>
           {t('expenses.balance.title')}
         </Typography>
         {marioBalance === moritzBalance ? (
-          <Typography variant="h6">{t('expenses.balance.settled')}</Typography>
+          <Typography sx={{ fontSize: '1.125rem', fontWeight: 600, color: dt.semanticSuccess }}>
+            {t('expenses.balance.settled')}
+          </Typography>
         ) : marioBalance < moritzBalance ? (
-          <Typography variant="h6">
-            {t('expenses.balance.marioOwesMoritz')}: {euro.format(moritzBalance / 100)}
-          </Typography>
+          <Box>
+            <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, mb: '2px' }}>
+              {t('expenses.balance.marioOwesMoritz')}
+            </Typography>
+            <Typography sx={{ fontSize: '1.5rem', fontWeight: 400, letterSpacing: '-0.02em', color: dt.primary }}>
+              {euro.format(moritzBalance / 100)}
+            </Typography>
+          </Box>
         ) : (
-          <Typography variant="h6">
-            {t('expenses.balance.moritzOwesMario')}: {euro.format(marioBalance / 100)}
-          </Typography>
+          <Box>
+            <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, mb: '2px' }}>
+              {t('expenses.balance.moritzOwesMario')}
+            </Typography>
+            <Typography sx={{ fontSize: '1.5rem', fontWeight: 400, letterSpacing: '-0.02em', color: dt.primary }}>
+              {euro.format(marioBalance / 100)}
+            </Typography>
+          </Box>
         )}
-        <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
+        <Typography sx={{ fontSize: '0.75rem', color: dt.mutedSoft, mt: '8px', lineHeight: 1.4 }}>
           {t('expenses.balance.hint')}
         </Typography>
       </Paper>

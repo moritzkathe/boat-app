@@ -1,144 +1,126 @@
 "use client";
 import Link from "next/link";
-import { Box, Stack, Typography, Card, CardMedia, CardActionArea, Button } from "@mui/material";
+import { Box, Stack, Typography, Card, CardActionArea } from "@mui/material";
 import { CalendarMonth, Payments, FavoriteBorder, QrCode2 } from "@mui/icons-material";
 import { t } from "@/lib/i18n";
+import { dt } from "./theme";
+
+const navItems = [
+  {
+    href: "/calendar",
+    icon: <CalendarMonth sx={{ fontSize: 20, color: dt.ink }} />,
+    title: t('home.calendar.title'),
+    subtitle: t('home.calendar.subtitle'),
+  },
+  {
+    href: "/expenses",
+    icon: <Payments sx={{ fontSize: 20, color: dt.ink }} />,
+    title: t('home.expenses.title'),
+    subtitle: t('home.expenses.subtitle'),
+  },
+  {
+    href: "/wishlist",
+    icon: <FavoriteBorder sx={{ fontSize: 20, color: dt.ink }} />,
+    title: t('wishlist.title'),
+    subtitle: t('wishlist.reasonPlaceholder'),
+  },
+  {
+    href: "/pay",
+    icon: <QrCode2 sx={{ fontSize: 20, color: dt.ink }} />,
+    title: t('home.pay.title'),
+    subtitle: t('home.pay.subtitle'),
+  },
+];
 
 export default function Home() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 4 }}>
-      <Card sx={{ borderRadius: 2, overflow: 'hidden' }}>
-        <CardMedia
-          component="img"
-          src="/hero.jpg"
-          alt="Boat at sunset - Updated for deployment"
-          sx={{ height: 240, objectFit: 'cover' }}
-        />
-      </Card>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '28px', mt: 1 }}>
 
-      <Stack direction="column" spacing={2}>
-        <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea 
-            component={Link} 
-            href="/calendar" 
-            sx={{ 
-              p: 2,
-              minHeight: '80px', // Better touch target
-              '&:active': {
-                backgroundColor: 'rgba(0,0,0,0.05)'
-              }
-            }}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <CalendarMonth color="primary" sx={{ fontSize: 36 }} />
-              <Box>
-                <Typography variant="h6" fontWeight={600}>{t('home.calendar.title')}</Typography>
-                <Typography color="text.secondary">{t('home.calendar.subtitle')}</Typography>
-              </Box>
-            </Stack>
-          </CardActionArea>
-        </Card>
-        <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea 
-            component={Link} 
-            href="/expenses" 
-            sx={{ 
-              p: 2,
-              minHeight: '80px', // Better touch target
-              '&:active': {
-                backgroundColor: 'rgba(0,0,0,0.05)'
-              }
-            }}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Payments color="primary" sx={{ fontSize: 36 }} />
-              <Box>
-                <Typography variant="h6" fontWeight={600}>{t('home.expenses.title')}</Typography>
-                <Typography color="text.secondary">{t('home.expenses.subtitle')}</Typography>
-              </Box>
-            </Stack>
-          </CardActionArea>
-        </Card>
-        <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea 
-            component={Link} 
-            href="/wishlist" 
-            sx={{ 
-              p: 2,
-              minHeight: '80px', // Better touch target
-              '&:active': {
-                backgroundColor: 'rgba(0,0,0,0.05)'
-              }
-            }}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <FavoriteBorder color="primary" sx={{ fontSize: 36 }} />
-              <Box>
-                <Typography variant="h6" fontWeight={600}>{t('wishlist.title')}</Typography>
-                <Typography color="text.secondary">{t('wishlist.reasonPlaceholder')}</Typography>
-              </Box>
-            </Stack>
-          </CardActionArea>
-        </Card>
-        <Card sx={{ borderRadius: 2, width: '100%' }}>
-          <CardActionArea 
-            component={Link} 
-            href="/pay" 
-            sx={{ 
-              p: 2,
-              minHeight: '80px', // Better touch target
-              '&:active': {
-                backgroundColor: 'rgba(0,0,0,0.05)'
-              }
-            }}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <QrCode2 color="primary" sx={{ fontSize: 36 }} />
-              <Box>
-                <Typography variant="h6" fontWeight={600}>{t('home.pay.title')}</Typography>
-                <Typography color="text.secondary">{t('home.pay.subtitle')}</Typography>
-              </Box>
-            </Stack>
-          </CardActionArea>
-        </Card>
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-          <Button 
-            component={Link} 
-            href="/status" 
-            variant="text" 
-            size="small"
-            sx={{ 
+      {/* Hero image */}
+      <Box sx={{
+        borderRadius: '12px',
+        overflow: 'hidden',
+        border: `1px solid ${dt.hairline}`,
+        lineHeight: 0,
+      }}>
+        <img
+          src="/hero.jpg"
+          alt="Cranchi Clipper"
+          style={{ width: '100%', height: 210, objectFit: 'cover', display: 'block' }}
+        />
+      </Box>
+
+      {/* Title block */}
+      <Box>
+        <Typography sx={{
+          fontSize: '1.625rem',
+          fontWeight: 400,
+          letterSpacing: '-0.03em',
+          lineHeight: 1.2,
+          color: dt.ink,
+          mb: '4px',
+        }}>
+          Cranchi Clipper
+        </Typography>
+        <Typography sx={{ fontSize: '0.875rem', color: dt.muted, lineHeight: 1.5 }}>
+          {t('home.tagline')}
+        </Typography>
+      </Box>
+
+      {/* Navigation cards */}
+      <Stack spacing="10px">
+        {navItems.map((item) => (
+          <Card key={item.href}>
+            <CardActionArea
+              component={Link}
+              href={item.href}
+              sx={{ p: '18px 20px', minHeight: 68 }}
+            >
+              <Stack direction="row" spacing="14px" alignItems="center">
+                <Box sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '8px',
+                  border: `1px solid ${dt.hairline}`,
+                  backgroundColor: dt.canvasSoft,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  {item.icon}
+                </Box>
+                <Box>
+                  <Typography sx={{ fontSize: '0.9375rem', fontWeight: 600, color: dt.ink, lineHeight: 1.3, mb: '2px' }}>
+                    {item.title}
+                  </Typography>
+                  <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, lineHeight: 1.4 }}>
+                    {item.subtitle}
+                  </Typography>
+                </Box>
+              </Stack>
+            </CardActionArea>
+          </Card>
+        ))}
+      </Stack>
+
+      {/* Footer links */}
+      <Stack direction="row" justifyContent="center" spacing="20px">
+        {[
+          { href: '/status', label: t('home.status.title') },
+          { href: '/backup-simple', label: 'Backup' },
+        ].map((l) => (
+          <Link key={l.href} href={l.href} style={{ textDecoration: 'none' }}>
+            <Typography sx={{
               fontSize: '0.75rem',
-              color: 'text.secondary',
-              textTransform: 'none',
-              p: 0.5,
-              minHeight: '44px', // Better touch target
-              '&:active': {
-                backgroundColor: 'rgba(0,0,0,0.1)'
-              }
-            }}
-          >
-            {t('home.status.title')}
-          </Button>
-                   <Button
-           component={Link}
-           href="/backup-simple"
-           variant="text"
-           size="small"
-           sx={{
-             fontSize: '0.75rem',
-             color: 'text.secondary',
-             textTransform: 'none',
-             p: 0.5,
-             minHeight: '44px', // Better touch target
-             '&:active': {
-               backgroundColor: 'rgba(0,0,0,0.1)'
-             }
-           }}
-         >
-           Backup
-         </Button>
-        </Box>
+              fontWeight: 500,
+              color: dt.mutedSoft,
+              letterSpacing: '0.02em',
+            }}>
+              {l.label}
+            </Typography>
+          </Link>
+        ))}
       </Stack>
     </Box>
   );
