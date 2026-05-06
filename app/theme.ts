@@ -1,9 +1,10 @@
 import { createTheme } from '@mui/material/styles';
 
 // Design tokens from DESIGN.md (Cursor-inspired editorial style)
+// Primary blue derived from design.md's timeline-read (#9fbbe0), saturated + darkened for AA contrast
 export const dt = {
-  primary:         '#f54e00',
-  primaryActive:   '#d04200',
+  primary:         '#4a82b4',
+  primaryActive:   '#3a6d9a',
   ink:             '#26251e',
   body:            '#5a5852',
   muted:           '#807d72',
@@ -75,6 +76,7 @@ const theme = createTheme({
           height: 44,
           padding: '12px 20px',
           '&:hover': { backgroundColor: dt.primaryActive, boxShadow: 'none' },
+          '&.Mui-disabled': { backgroundColor: dt.hairline, color: dt.mutedSoft },
         },
         outlined: {
           backgroundColor: dt.surfaceCard,

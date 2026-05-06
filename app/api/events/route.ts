@@ -62,7 +62,7 @@ export async function GET() {
         start: formatLocalDate(weekStart),
         end: formatLocalDate(weekEnd),
         allDay: true,
-        color: isMario ? "#e3f2fd" : "#fff3e0",
+        color: isMario ? "rgba(74,130,180,0.08)" : "rgba(192,133,50,0.08)",
         display: 'background',
       });
       isMario = !isMario;
@@ -82,7 +82,7 @@ export async function GET() {
         start: formatLocalDate(weekStart),
         end: formatLocalDate(weekEnd),
         allDay: true,
-        color: isMario ? "#e3f2fd" : "#fff3e0",
+        color: isMario ? "rgba(74,130,180,0.08)" : "rgba(192,133,50,0.08)",
         display: 'background',
       });
       isMario = !isMario;
@@ -98,7 +98,7 @@ export async function GET() {
       start: e.start.toISOString(),
       end: e.end ? e.end.toISOString() : undefined,
       allDay: e.allDay,
-      color: e.owner === "MARIO" ? "#2196f3" : "#ff9800",
+      color: e.owner === "MARIO" ? "#4a82b4" : "#c08532",
       extendedProps: { owner: e.owner },
     })),
     ...memoryEvents.map((e) => ({
@@ -107,7 +107,7 @@ export async function GET() {
       start: e.start,
       end: e.end,
       allDay: e.allDay,
-      color: e.owner === "MARIO" ? "#2196f3" : "#ff9800",
+      color: e.owner === "MARIO" ? "#4a82b4" : "#c08532",
       extendedProps: { owner: e.owner },
     })),
   ];
