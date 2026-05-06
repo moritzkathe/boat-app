@@ -227,11 +227,11 @@ export default function ExpensesPage() {
           <Typography variant="h6">{t('expenses.balance.settled')}</Typography>
         ) : marioBalance < moritzBalance ? (
           <Typography variant="h6">
-            {t('expenses.balance.marioOwesMoritz')}: {euro.format((moritzBalance - marioBalance) / 100)}
+            {t('expenses.balance.marioOwesMoritz')}: {euro.format(moritzBalance / 100)}
           </Typography>
         ) : (
           <Typography variant="h6">
-            {t('expenses.balance.moritzOwesMario')}: {euro.format((marioBalance - moritzBalance) / 100)}
+            {t('expenses.balance.moritzOwesMario')}: {euro.format(marioBalance / 100)}
           </Typography>
         )}
         <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
