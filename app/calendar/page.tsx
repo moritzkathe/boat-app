@@ -123,8 +123,16 @@ export default function CalendarPage() {
       .fc-theme-standard td, .fc-theme-standard th {
         border-color: #efeee8 !important;
       }
-      .fc-scrollgrid { border-radius: 0 0 12px 12px !important; }
-      .fc-scrollgrid-section-header > td { border-top: none !important; }
+      /* Remove FullCalendar's own outer border — wrapper already has one */
+      .fc-scrollgrid { border: none !important; }
+      .fc-scrollgrid-section > td { border: none !important; }
+      /* Only keep inner cell borders */
+      .fc-scrollgrid-sync-table td,
+      .fc-scrollgrid-sync-table th {
+        border-color: #efeee8 !important;
+      }
+      /* Remove double top border under the header row */
+      .fc-scrollgrid-section-header > td { border-bottom: 1px solid #e6e5e0 !important; }
 
       /* ── Column headers (Mon, Tue…) ── */
       .fc-col-header-cell {
@@ -294,7 +302,7 @@ export default function CalendarPage() {
           <Box sx={{ width: 10, height: 10, borderRadius: '3px', backgroundColor: '#4a82b4', flexShrink: 0 }} />
           <span style={{ fontSize: '0.75rem', color: '#807d72', fontWeight: 500 }}>{t('calendar.mario')}</span>
         </Stack>
-        <Box sx={{ width: 1, height: 12, backgroundColor: '#e6e5e0' }} />
+        <Box sx={{ width: '1px', height: 12, backgroundColor: '#e6e5e0' }} />
         <Stack direction="row" spacing={0.75} alignItems="center">
           <Box sx={{ width: 10, height: 10, borderRadius: '3px', backgroundColor: '#c08532', flexShrink: 0 }} />
           <span style={{ fontSize: '0.75rem', color: '#807d72', fontWeight: 500 }}>{t('calendar.moritz')}</span>
