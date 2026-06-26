@@ -4,6 +4,13 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['@prisma/client'],
   async headers() {
     return [
+      // Allow OG image to be cached by social crawlers (WhatsApp, Telegram etc.)
+      {
+        source: '/hero.jpg',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [

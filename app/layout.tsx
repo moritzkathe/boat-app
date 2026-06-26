@@ -11,10 +11,7 @@ const inter = Inter({
   display: "swap",
 });
 
-// Vercel sets VERCEL_URL automatically; fallback to localhost for dev
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
+const baseUrl = 'https://boat-app-gules.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
