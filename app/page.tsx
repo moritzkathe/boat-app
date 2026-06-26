@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Box, Stack, Typography, Card, CardActionArea } from "@mui/material";
-import { CalendarMonth, Payments, FavoriteBorder, QrCode2 } from "@mui/icons-material";
+import { CalendarMonth, Payments, FavoriteBorder, QrCode2, LocalGasStation } from "@mui/icons-material";
 import { t } from "@/lib/i18n";
 import { dt } from "./theme";
 
@@ -29,6 +29,12 @@ const navItems = [
     icon: <QrCode2 sx={{ fontSize: 20, color: dt.ink }} />,
     title: t('home.pay.title'),
     subtitle: t('home.pay.subtitle'),
+  },
+  {
+    href: "/fuel",
+    icon: <LocalGasStation sx={{ fontSize: 20, color: dt.ink }} />,
+    title: "Spritrechner",
+    subtitle: "Strecken & Wakeboard-Kosten",
   },
 ];
 
