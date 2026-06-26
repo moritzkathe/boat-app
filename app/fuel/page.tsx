@@ -1,22 +1,63 @@
 "use client";
 import { useState } from "react";
-import { Box, Typography, Stack, Divider, Paper, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import {
+  Box, Typography, Stack, Divider, Paper,
+  ToggleButtonGroup, ToggleButton,
+  Select, MenuItem, FormControl, InputLabel, ListSubheader,
+} from "@mui/material";
 import { dt } from "@/app/theme";
 
-const destinations = [
-  { name: 'Hagnau',           km: 4,  sparfahrt: 6,  gleitfahrt: 7  },
-  { name: 'Meersburg',        km: 8,  sparfahrt: 12, gleitfahrt: 14 },
-  { name: 'Friedrichshafen',  km: 10, sparfahrt: 15, gleitfahrt: 18 },
-  { name: 'Überlingen',       km: 18, sparfahrt: 27, gleitfahrt: 32 },
-  { name: 'Konstanz',         km: 22, sparfahrt: 33, gleitfahrt: 40 },
-  { name: 'Lindau',           km: 30, sparfahrt: 45, gleitfahrt: 54 },
-  { name: 'Bregenz',          km: 38, sparfahrt: 57, gleitfahrt: 68 },
-] as const;
+// Kosten werden aus km × Rate berechnet (1,50 €/km Sparfahrt, 1,80 €/km Gleitfahrt)
+// Stimmt mit den PDF-Werten überein: z.B. Bregenz 38 km × 1,50 = 57 € ✓
+const SPAR_PER_KM    = 1.50;
+const GLEIT_PER_KM   = 1.80;
+
+type Destination = { name: string; km: number; country: 'DE' | 'CH' | 'AT' };
+
+const destinations: Record<string, Destination[]> = {
+  Deutschland: [
+    { name: 'Hagnau',                km: 4,  country: 'DE' },
+    { name: 'Meersburg',             km: 8,  country: 'DE' },
+    { name: 'Friedrichshafen',       km: 10, country: 'DE' },
+    { name: 'Uhldingen-Mühlhofen',   km: 14, country: 'DE' },
+    { name: 'Überlingen',            km: 18, country: 'DE' },
+    { name: 'Sipplingen',            km: 20, country: 'DE' },
+    { name: 'Konstanz',              km: 22, country: 'DE' },
+    { name: 'Bodman-Ludwigshafen',   km: 28, country: 'DE' },
+    { name: 'Lindau',                km: 30, country: 'DE' },
+  ],
+  Schweiz: [
+    { name: 'Münsterlingen',         km: 20, country: 'CH' },
+    { name: 'Kreuzlingen',           km: 24, country: 'CH' },
+    { name: 'Güttingen',             km: 28, country: 'CH' },
+    { name: 'Arbon',                 km: 32, country: 'CH' },
+    { name: 'Romanshorn',            km: 35, country: 'CH' },
+    { name: 'Rorschach',             km: 42, country: 'CH' },
+  ],
+  Österreich: [
+    { name: 'Hard',                  km: 36, country: 'AT' },
+    { name: 'Bregenz',               km: 38, country: 'AT' },
+    { name: 'Lochau',                km: 40, country: 'AT' },
+  ],
+};
+
+const allDestinations = Object.values(destinations).flat();
 
 const wakeModes = [
-  { key: 'easy',      label: 'Gemütlich',  sublabel: 'Gleitfahrt',                         minH: 55,  maxH: 65  },
-  { key: 'wake',      label: 'Wakeboard',  sublabel: 'Wakeboard / Wasserski',              minH: 70,  maxH: 110 },
-  { key: 'intense',   label: 'Intensiv',   sublabel: 'Viel Anfahren & Wenden',             minH: 110, maxH: 145 },
+  {
+    key:      'normal',
+    label:    'Normal',
+    sublabel: 'Standard Wakeboarden',
+    note:     '40–60 l/h',
+    minH: 70,  maxH: 110,
+  },
+  {
+    key:      'intensiv',
+    label:    'Intensiv',
+    sublabel: 'Viel Anfahren & Wenden',
+    note:     '60–80 l/h — mehr Verbrauch durch häufige Starts',
+    minH: 110, maxH: 145,
+  },
 ] as const;
 
 const durationOptions = [
@@ -27,14 +68,18 @@ const durationOptions = [
 ];
 
 type DriveMode = 'sparfahrt' | 'gleitfahrt';
-type TripMode  = 'one' | 'round';
 type WakeKey   = typeof wakeModes[number]['key'];
+
+const euro = new Intl.NumberFormat('de-DE', {
+  style: 'currency', currency: 'EUR',
+  minimumFractionDigits: 0, maximumFractionDigits: 0,
+});
 
 function SectionLabel({ children }: { children: string }) {
   return (
     <Typography sx={{
-      fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.88px',
-      textTransform: 'uppercase', color: dt.muted,
+      fontSize: '0.6875rem', fontWeight: 600,
+      letterSpacing: '0.88px', textTransform: 'uppercase', color: dt.muted,
     }}>
       {children}
     </Typography>
@@ -55,24 +100,43 @@ function ResultRow({ label, value, accent }: { label: string; value: string; acc
   );
 }
 
-const euro = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+function PickerBox({
+  selected, onClick, children,
+}: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <Box
+      onClick={onClick}
+      sx={{
+        py: '10px', textAlign: 'center', borderRadius: '8px',
+        border: `1px solid ${selected ? dt.primary : dt.hairline}`,
+        backgroundColor: selected ? 'rgba(74,130,180,0.06)' : dt.surfaceCard,
+        cursor: 'pointer', userSelect: 'none',
+        transition: 'border-color 0.12s, background-color 0.12s',
+        '&:hover': { borderColor: selected ? dt.primary : dt.hairlineStrong },
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
 
 export default function FuelPage() {
-  const [dest, setDest]           = useState<typeof destinations[number] | null>(null);
+  const [destName, setDestName]   = useState('');
   const [driveMode, setDriveMode] = useState<DriveMode>('gleitfahrt');
-  const [tripMode, setTripMode]   = useState<TripMode>('one');
-  const [wakeKey, setWakeKey]     = useState<WakeKey>('wake');
+  const [persons, setPersons]     = useState(2);
+  const [wakeKey, setWakeKey]     = useState<WakeKey>('normal');
   const [wakeDur, setWakeDur]     = useState(1);
 
-  // Route calc
-  const multi     = tripMode === 'round' ? 2 : 1;
-  const totalKm   = dest ? dest.km * multi : null;
-  const totalCost = dest ? dest[driveMode] * multi : null;
+  const dest     = allDestinations.find(d => d.name === destName) ?? null;
+  const roundKm  = dest ? dest.km * 2 : null;
+  const costPerKm = driveMode === 'sparfahrt' ? SPAR_PER_KM : GLEIT_PER_KM;
+  const totalCost = dest ? Math.round(dest.km * 2 * costPerKm) : null;
 
-  // Wakeboard calc
-  const wm           = wakeModes.find(m => m.key === wakeKey)!;
-  const wakeCostMin  = Math.round(wm.minH * wakeDur);
-  const wakeCostMax  = Math.round(wm.maxH * wakeDur);
+  const wm          = wakeModes.find(m => m.key === wakeKey)!;
+  const wakeCostMin = Math.round(wm.minH * wakeDur);
+  const wakeCostMax = Math.round(wm.maxH * wakeDur);
+
+  const durLabel = wakeDur === 0.5 ? '30 min' : wakeDur === 1 ? '1 Stunde' : `${wakeDur} Stunden`;
 
   return (
     <Box sx={{ my: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -89,52 +153,67 @@ export default function FuelPage() {
 
       {/* ── Strecke ── */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <SectionLabel>Ziel ab Immenstaad</SectionLabel>
+        <SectionLabel>Strecke ab Immenstaad</SectionLabel>
 
-        {/* Destination grid */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-          {destinations.map((d) => {
-            const selected = dest?.name === d.name;
-            return (
-              <Box
-                key={d.name}
-                onClick={() => setDest(selected ? null : d)}
-                sx={{
-                  p: '12px 14px',
-                  borderRadius: '8px',
-                  border: `1px solid ${selected ? dt.primary : dt.hairline}`,
-                  backgroundColor: selected ? 'rgba(74,130,180,0.06)' : dt.surfaceCard,
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                  transition: 'border-color 0.12s, background-color 0.12s',
-                  '&:hover': {
-                    borderColor: selected ? dt.primary : dt.hairlineStrong,
-                    backgroundColor: selected ? 'rgba(74,130,180,0.09)' : dt.canvasSoft,
-                  },
-                }}
-              >
-                <Typography sx={{ fontSize: '0.9375rem', fontWeight: selected ? 600 : 400, color: selected ? dt.primary : dt.ink, lineHeight: 1.3 }}>
-                  {d.name}
-                </Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: dt.muted, mt: '2px' }}>
-                  {d.km} km
-                </Typography>
-              </Box>
-            );
-          })}
-        </Box>
+        {/* Destination dropdown */}
+        <FormControl fullWidth>
+          <InputLabel>Ziel auswählen</InputLabel>
+          <Select
+            value={destName}
+            label="Ziel auswählen"
+            onChange={(e) => setDestName(e.target.value)}
+          >
+            {Object.entries(destinations).map(([country, cities]) => [
+              <ListSubheader key={country} sx={{
+                fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.7px',
+                textTransform: 'uppercase', color: dt.muted,
+                backgroundColor: dt.canvasSoft, lineHeight: '32px',
+              }}>
+                {country}
+              </ListSubheader>,
+              ...cities.map(d => (
+                <MenuItem key={d.name} value={d.name}>
+                  <Stack direction="row" justifyContent="space-between" width="100%">
+                    <span>{d.name}</span>
+                    <Typography component="span" sx={{ fontSize: '0.8125rem', color: dt.muted }}>
+                      {d.km} km
+                    </Typography>
+                  </Stack>
+                </MenuItem>
+              )),
+            ])}
+          </Select>
+        </FormControl>
 
         {/* Drive mode */}
-        <ToggleButtonGroup exclusive value={driveMode} onChange={(_, v) => v && setDriveMode(v)} sx={{ width: '100%' }}>
-          <ToggleButton value="sparfahrt"  sx={{ flex: 1, py: 1.5 }}>Sparfahrt <Box component="span" sx={{ ml: 0.5, fontSize: '0.75rem', color: 'inherit', opacity: 0.65 }}>6–8 km/h</Box></ToggleButton>
-          <ToggleButton value="gleitfahrt" sx={{ flex: 1, py: 1.5 }}>Gleitfahrt <Box component="span" sx={{ ml: 0.5, fontSize: '0.75rem', color: 'inherit', opacity: 0.65 }}>30–35 km/h</Box></ToggleButton>
+        <ToggleButtonGroup
+          exclusive value={driveMode}
+          onChange={(_, v) => v && setDriveMode(v)}
+          sx={{ width: '100%' }}
+        >
+          <ToggleButton value="sparfahrt" sx={{ flex: 1, py: 1.5 }}>
+            Sparfahrt
+            <Box component="span" sx={{ ml: 0.75, fontSize: '0.75rem', opacity: 0.65 }}>6–8 km/h</Box>
+          </ToggleButton>
+          <ToggleButton value="gleitfahrt" sx={{ flex: 1, py: 1.5 }}>
+            Gleitfahrt
+            <Box component="span" sx={{ ml: 0.75, fontSize: '0.75rem', opacity: 0.65 }}>30–35 km/h</Box>
+          </ToggleButton>
         </ToggleButtonGroup>
 
-        {/* Trip type */}
-        <ToggleButtonGroup exclusive value={tripMode} onChange={(_, v) => v && setTripMode(v)} sx={{ width: '100%' }}>
-          <ToggleButton value="one"   sx={{ flex: 1, py: 1.5 }}>Hinfahrt</ToggleButton>
-          <ToggleButton value="round" sx={{ flex: 1, py: 1.5 }}>Hin & Zurück</ToggleButton>
-        </ToggleButtonGroup>
+        {/* Persons */}
+        <Box>
+          <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, mb: 1 }}>Personen</Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
+            {[1, 2, 3, 4, 5, 6].map(n => (
+              <PickerBox key={n} selected={persons === n} onClick={() => setPersons(n)}>
+                <Typography sx={{ fontSize: '0.9375rem', fontWeight: persons === n ? 600 : 400, color: persons === n ? dt.primary : dt.ink }}>
+                  {n}
+                </Typography>
+              </PickerBox>
+            ))}
+          </Box>
+        </Box>
 
         {/* Result */}
         <Paper variant="outlined" sx={{
@@ -149,20 +228,30 @@ export default function FuelPage() {
             </Typography>
           ) : (
             <>
-              <Typography sx={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.88px', textTransform: 'uppercase', color: dt.muted, mb: '16px' }}>
-                Immenstaad → {dest.name}{tripMode === 'round' ? ' → Immenstaad' : ''} · {totalKm} km
+              <Typography sx={{
+                fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.88px',
+                textTransform: 'uppercase', color: dt.muted, mb: '16px',
+              }}>
+                Immenstaad → {dest.name} → Immenstaad · {roundKm} km
               </Typography>
               <Stack direction="row" spacing={3} alignItems="flex-end">
-                <ResultRow label="Gesamt" value={euro.format(totalCost!)} />
+                <ResultRow label="Gesamt (Hin & Zurück)" value={euro.format(totalCost!)} />
                 <Box sx={{ width: '1px', height: 48, backgroundColor: dt.hairline, flexShrink: 0 }} />
-                <ResultRow label="Pro Person" value={euro.format(Math.round(totalCost! / 2))} accent />
+                <ResultRow
+                  label={`Pro Person (÷ ${persons})`}
+                  value={euro.format(Math.round(totalCost! / persons))}
+                  accent
+                />
               </Stack>
             </>
           )}
         </Paper>
 
         {/* Tip */}
-        <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, lineHeight: 1.5, borderLeft: `2px solid ${dt.hairlineStrong}`, pl: 1.5 }}>
+        <Typography sx={{
+          fontSize: '0.8125rem', color: dt.muted, lineHeight: 1.5,
+          borderLeft: `2px solid ${dt.hairlineStrong}`, pl: 1.5,
+        }}>
           15–20 km/h vermeiden — teuerster Bereich. Entweder langsam oder sauber gleiten.
         </Typography>
       </Box>
@@ -171,61 +260,79 @@ export default function FuelPage() {
 
       {/* ── Wakeboard ── */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <SectionLabel>Wakeboarden & Wasserski</SectionLabel>
+        <SectionLabel>Wakeboarden</SectionLabel>
 
-        {/* Intensity */}
-        <ToggleButtonGroup exclusive value={wakeKey} onChange={(_, v) => v && setWakeKey(v)} sx={{ width: '100%' }}>
+        {/* Mode */}
+        <ToggleButtonGroup
+          exclusive value={wakeKey}
+          onChange={(_, v) => v && setWakeKey(v)}
+          sx={{ width: '100%' }}
+        >
           {wakeModes.map(m => (
-            <ToggleButton key={m.key} value={m.key} sx={{ flex: 1, py: 1.5, fontSize: '0.8125rem' }}>
+            <ToggleButton key={m.key} value={m.key} sx={{ flex: 1, py: 1.5 }}>
               {m.label}
             </ToggleButton>
           ))}
         </ToggleButtonGroup>
 
+        {/* Mode explanation */}
+        <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, lineHeight: 1.5 }}>
+          {wakeKey === 'normal'
+            ? 'Gleichmäßige Fahrt — Motor läuft konstant im mittleren Bereich.'
+            : 'Häufiges Anfahren und Wenden erhöht den Verbrauch deutlich — jeder Start kostet viel Sprit.'}
+        </Typography>
+
         {/* Duration */}
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
-          {durationOptions.map(({ value, label }) => {
-            const selected = wakeDur === value;
-            return (
-              <Box
-                key={value}
-                onClick={() => setWakeDur(value)}
-                sx={{
-                  py: '10px',
-                  textAlign: 'center',
-                  borderRadius: '8px',
-                  border: `1px solid ${selected ? dt.primary : dt.hairline}`,
-                  backgroundColor: selected ? 'rgba(74,130,180,0.06)' : dt.surfaceCard,
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                  transition: 'border-color 0.12s, background-color 0.12s',
-                  '&:hover': { borderColor: dt.hairlineStrong },
-                }}
-              >
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: selected ? 600 : 400, color: selected ? dt.primary : dt.ink }}>
-                  {label}
+          {durationOptions.map(({ value, label }) => (
+            <PickerBox key={value} selected={wakeDur === value} onClick={() => setWakeDur(value)}>
+              <Typography sx={{ fontSize: '0.875rem', fontWeight: wakeDur === value ? 600 : 400, color: wakeDur === value ? dt.primary : dt.ink }}>
+                {label}
+              </Typography>
+            </PickerBox>
+          ))}
+        </Box>
+
+        {/* Persons for wakeboard */}
+        <Box>
+          <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, mb: 1 }}>Personen</Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
+            {[1, 2, 3, 4, 5, 6].map(n => (
+              <PickerBox key={n} selected={persons === n} onClick={() => setPersons(n)}>
+                <Typography sx={{ fontSize: '0.9375rem', fontWeight: persons === n ? 600 : 400, color: persons === n ? dt.primary : dt.ink }}>
+                  {n}
                 </Typography>
-              </Box>
-            );
-          })}
+              </PickerBox>
+            ))}
+          </Box>
         </Box>
 
         {/* Result */}
         <Paper variant="outlined" sx={{ p: '20px 24px' }}>
-          <Typography sx={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.88px', textTransform: 'uppercase', color: dt.muted, mb: '16px' }}>
-            {wm.sublabel} · {wakeDur < 1 ? '30 min' : wakeDur === 1 ? '1 Stunde' : `${wakeDur} Stunden`}
+          <Typography sx={{
+            fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.88px',
+            textTransform: 'uppercase', color: dt.muted, mb: '16px',
+          }}>
+            {wm.sublabel} · {durLabel}
           </Typography>
           <Stack direction="row" spacing={3} alignItems="flex-end">
-            <ResultRow label="Spritkosten" value={`${euro.format(wakeCostMin)}–${euro.format(wakeCostMax)}`} />
+            <ResultRow
+              label="Spritkosten"
+              value={`${euro.format(wakeCostMin)}–${euro.format(wakeCostMax)}`}
+            />
             <Box sx={{ width: '1px', height: 48, backgroundColor: dt.hairline, flexShrink: 0 }} />
-            <ResultRow label="Pro Person" value={`${euro.format(Math.round(wakeCostMin / 2))}–${euro.format(Math.round(wakeCostMax / 2))}`} accent />
+            <ResultRow
+              label={`Pro Person (÷ ${persons})`}
+              value={`${euro.format(Math.round(wakeCostMin / persons))}–${euro.format(Math.round(wakeCostMax / persons))}`}
+              accent
+            />
           </Stack>
         </Paper>
       </Box>
 
-      {/* Footer note */}
+      {/* Footer */}
       <Typography sx={{ fontSize: '0.75rem', color: dt.mutedSoft, textAlign: 'center', lineHeight: 1.5 }}>
-        Richtwerte gemäß Spritkostenübersicht · gerechnet mit 1,80 €/l
+        Richtwerte · 1,80 €/l · Sparfahrt 1,50 €/km · Gleitfahrt 1,80 €/km
       </Typography>
     </Box>
   );
