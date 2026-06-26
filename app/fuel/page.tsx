@@ -20,9 +20,12 @@ const destinations: Record<string, Destination[]> = {
     { name: 'Meersburg',             km: 8,  country: 'DE' },
     { name: 'Friedrichshafen',       km: 10, country: 'DE' },
     { name: 'Uhldingen-Mühlhofen',   km: 14, country: 'DE' },
+    { name: 'Langenargen',           km: 16, country: 'DE' },
     { name: 'Überlingen',            km: 18, country: 'DE' },
+    { name: 'Kressbronn',            km: 21, country: 'DE' },
     { name: 'Sipplingen',            km: 20, country: 'DE' },
     { name: 'Konstanz',              km: 22, country: 'DE' },
+    { name: 'Wasserburg',            km: 26, country: 'DE' },
     { name: 'Bodman-Ludwigshafen',   km: 28, country: 'DE' },
     { name: 'Lindau',                km: 30, country: 'DE' },
   ],
@@ -256,10 +259,12 @@ export default function FuelPage() {
         </Typography>
       </Box>
 
-      <Divider />
-
       {/* ── Wakeboard ── */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Paper variant="outlined" sx={{
+        p: '20px 20px 24px',
+        backgroundColor: dt.canvasSoft,
+        display: 'flex', flexDirection: 'column', gap: 2,
+      }}>
         <SectionLabel>Wakeboarden</SectionLabel>
 
         {/* Mode */}
@@ -308,7 +313,7 @@ export default function FuelPage() {
         </Box>
 
         {/* Result */}
-        <Paper variant="outlined" sx={{ p: '20px 24px' }}>
+        <Paper variant="outlined" sx={{ p: '20px 24px', backgroundColor: dt.surfaceCard }}>
           <Typography sx={{
             fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.88px',
             textTransform: 'uppercase', color: dt.muted, mb: '16px',
@@ -328,7 +333,7 @@ export default function FuelPage() {
             />
           </Stack>
         </Paper>
-      </Box>
+      </Paper>{/* end wakeboard card */}
 
       {/* Footer */}
       <Typography sx={{ fontSize: '0.75rem', color: dt.mutedSoft, textAlign: 'center', lineHeight: 1.5 }}>

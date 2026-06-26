@@ -11,13 +11,25 @@ const inter = Inter({
   display: "swap",
 });
 
+// Vercel sets VERCEL_URL automatically; fallback to localhost for dev
+const baseUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "Cranchi Clipper",
   description: "Kalender, Ausgaben & Wunschliste",
   manifest: "/manifest.json",
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
+  },
+  openGraph: {
+    title: "Cranchi Clipper",
+    description: "Reservierungen, Ausgaben & Wunschliste für unser Boot.",
+    images: [{ url: '/hero.jpg', width: 1024, height: 768, alt: 'Cranchi Clipper 760' }],
+    type: 'website',
   },
   robots: {
     index: false,
