@@ -205,24 +205,27 @@ export default function HafenPage() {
 
       {/* General rules box */}
       <Paper variant="outlined" sx={{ p: '16px 20px', backgroundColor: dt.canvasSoft }}>
-        <Stack spacing="12px">
-          <SectionLabel>Allgemeines Prozedere</SectionLabel>
-          <Stack spacing="8px">
-            {[
-              '7er-Stander setzen (blau-weiße Flagge) — signalisiert dem Hafenmeister, dass du einen Gastplatz suchst.',
-              'Kein VHF auf dem Bodensee — Hafenmeister kommen persönlich zu dir.',
-              'Check-in ab 16:00 Uhr, Check-out bis 11:00 Uhr.',
-              'Kein Hafenmeister da? Geld in Umschlag mit Bootsname & Kennzeichen in den Briefkasten am Steg.',
-              'Schweiz & Österreich: kein Zoll nötig — Bodensee ist Gemeinschaftssee.',
-            ].map((rule, i) => (
-              <Stack key={i} direction="row" spacing="10px" alignItems="flex-start">
-                <Box sx={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: dt.muted, mt: '7px', flexShrink: 0 }} />
-                <Typography sx={{ fontSize: '0.8125rem', color: dt.ink, lineHeight: 1.5 }}>
-                  {rule}
-                </Typography>
-              </Stack>
-            ))}
-          </Stack>
+        <Stack spacing="14px">
+          <SectionLabel>So funktioniert es überall</SectionLabel>
+          {[
+            { label: 'Ankommen', text: 'Im Gästebereich anlegen und warten — der Hafenmeister kommt persönlich zu dir.' },
+            { label: 'Zeiten', text: 'Bezahlt wird ab 16:00 Uhr. Abfahrt bis spätestens 11:00 Uhr am nächsten Tag.' },
+            { label: 'Niemand da?', text: 'Geld in Umschlag stecken, Bootsname draufschreiben und in den Briefkasten am Steg einwerfen.' },
+            { label: 'CH & AT', text: 'Kein Zoll nötig — der Bodensee gehört zu keinem Land allein, freie Einfahrt überall.' },
+          ].map(({ label, text }) => (
+            <Stack key={label} direction="row" spacing="12px" alignItems="flex-start">
+              <Typography sx={{
+                fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.5px',
+                textTransform: 'uppercase', color: dt.muted,
+                minWidth: 80, pt: '2px', flexShrink: 0,
+              }}>
+                {label}
+              </Typography>
+              <Typography sx={{ fontSize: '0.8125rem', color: dt.ink, lineHeight: 1.5 }}>
+                {text}
+              </Typography>
+            </Stack>
+          ))}
         </Stack>
       </Paper>
 
