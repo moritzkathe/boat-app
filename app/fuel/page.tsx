@@ -123,17 +123,26 @@ function PickerBox({
   );
 }
 
+const IMMENSTAAD = 'Immenstaad';
+
 export default function FuelPage() {
+  const [startName, setStartName] = useState(IMMENSTAAD);
   const [destName, setDestName]   = useState('');
   const [driveMode, setDriveMode] = useState<DriveMode>('gleitfahrt');
   const [persons, setPersons]     = useState(2);
   const [wakeKey, setWakeKey]     = useState<WakeKey>('normal');
   const [wakeDur, setWakeDur]     = useState(1);
 
-  const dest     = allDestinations.find(d => d.name === destName) ?? null;
-  const roundKm  = dest ? dest.km * 2 : null;
+  const startKm   = startName === IMMENSTAAD ? 0 : (allDestinations.find(d => d.name === startName)?.km ?? 0);
+  const dest      = allDestinations.find(d => d.name === destName) ?? null;
+  const routeKm   = dest ? Math.abs(dest.km - startKm) : null;
   const costPerKm = driveMode === 'sparfahrt' ? SPAR_PER_KM : GLEIT_PER_KM;
-  const totalCost = dest ? Math.round(dest.km * 2 * costPerKm) : null;
+  const totalCost = routeKm != null ? Math.round(routeKm * 2 * costPerKm) : null;
+
+  function handleStartChange(name: string) {
+    setStartName(name);
+    if (destName === name) setDestName('');
+  }
 
   const wm          = wakeModes.find(m => m.key === wakeKey)!;
   const wakeCostMin = Math.round(wm.minH * wakeDur);
@@ -156,37 +165,69 @@ export default function FuelPage() {
 
       {/* ── Strecke ── */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <SectionLabel>Strecke ab Immenstaad</SectionLabel>
+        <SectionLabel>Strecke</SectionLabel>
 
-        {/* Destination dropdown */}
-        <FormControl fullWidth>
-          <InputLabel>Ziel auswählen</InputLabel>
-          <Select
-            value={destName}
-            label="Ziel auswählen"
-            onChange={(e) => setDestName(e.target.value)}
-          >
-            {Object.entries(destinations).map(([country, cities]) => [
-              <ListSubheader key={country} sx={{
-                fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.7px',
-                textTransform: 'uppercase', color: dt.muted,
-                backgroundColor: dt.canvasSoft, lineHeight: '32px',
-              }}>
-                {country}
-              </ListSubheader>,
-              ...cities.map(d => (
-                <MenuItem key={d.name} value={d.name}>
-                  <Stack direction="row" justifyContent="space-between" width="100%">
-                    <span>{d.name}</span>
-                    <Typography component="span" sx={{ fontSize: '0.8125rem', color: dt.muted }}>
-                      {d.km} km
-                    </Typography>
-                  </Stack>
-                </MenuItem>
-              )),
-            ])}
-          </Select>
-        </FormControl>
+        {/* Start + Destination dropdowns */}
+        <Stack direction="row" spacing="10px">
+          {/* Von */}
+          <FormControl sx={{ flex: 1 }}>
+            <InputLabel>Von</InputLabel>
+            <Select
+              value={startName}
+              label="Von"
+              onChange={(e) => handleStartChange(e.target.value)}
+            >
+              <MenuItem value={IMMENSTAAD}>
+                <Stack direction="row" justifyContent="space-between" width="100%">
+                  <span>Immenstaad</span>
+                  <Typography component="span" sx={{ fontSize: '0.8125rem', color: dt.primary, fontWeight: 500 }}>
+                    Heimat
+                  </Typography>
+                </Stack>
+              </MenuItem>
+              <Box sx={{ height: '1px', backgroundColor: dt.hairline, mx: 1, my: '4px' }} />
+              {Object.entries(destinations).map(([country, cities]) => [
+                <ListSubheader key={country} sx={{
+                  fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.7px',
+                  textTransform: 'uppercase', color: dt.muted,
+                  backgroundColor: dt.canvasSoft, lineHeight: '32px',
+                }}>
+                  {country}
+                </ListSubheader>,
+                ...cities.map(d => (
+                  <MenuItem key={d.name} value={d.name}>
+                    {d.name}
+                  </MenuItem>
+                )),
+              ])}
+            </Select>
+          </FormControl>
+
+          {/* Nach */}
+          <FormControl sx={{ flex: 1 }}>
+            <InputLabel>Nach</InputLabel>
+            <Select
+              value={destName}
+              label="Nach"
+              onChange={(e) => setDestName(e.target.value)}
+            >
+              {Object.entries(destinations).map(([country, cities]) => [
+                <ListSubheader key={country} sx={{
+                  fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.7px',
+                  textTransform: 'uppercase', color: dt.muted,
+                  backgroundColor: dt.canvasSoft, lineHeight: '32px',
+                }}>
+                  {country}
+                </ListSubheader>,
+                ...cities.filter(d => d.name !== startName).map(d => (
+                  <MenuItem key={d.name} value={d.name}>
+                    {d.name}
+                  </MenuItem>
+                )),
+              ])}
+            </Select>
+          </FormControl>
+        </Stack>
 
         {/* Drive mode */}
         <ToggleButtonGroup
@@ -229,13 +270,17 @@ export default function FuelPage() {
             <Typography sx={{ fontSize: '0.875rem', color: dt.mutedSoft, textAlign: 'center', py: 1 }}>
               Ziel auswählen
             </Typography>
+          ) : routeKm === 0 ? (
+            <Typography sx={{ fontSize: '0.875rem', color: dt.mutedSoft, textAlign: 'center', py: 1 }}>
+              Start und Ziel sind gleich
+            </Typography>
           ) : (
             <>
               <Typography sx={{
                 fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.88px',
                 textTransform: 'uppercase', color: dt.muted, mb: '16px',
               }}>
-                Immenstaad → {dest.name} → Immenstaad · {roundKm} km
+                {startName} → {dest.name} → {startName} · {routeKm! * 2} km
               </Typography>
               <Stack direction="row" spacing={3} alignItems="flex-end">
                 <ResultRow label="Gesamt (Hin & Zurück)" value={euro.format(totalCost!)} />
