@@ -89,12 +89,12 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-function ResultRow({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function ResultRow({ label, value, accent, compact }: { label: string; value: string; accent?: boolean; compact?: boolean }) {
   return (
     <Box>
       <Typography sx={{ fontSize: '0.75rem', color: dt.muted, mb: '3px' }}>{label}</Typography>
       <Typography sx={{
-        fontSize: '1.75rem', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1,
+        fontSize: compact ? '1.25rem' : '1.75rem', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1,
         color: accent ? dt.primary : dt.ink,
       }}>
         {value}
@@ -168,9 +168,9 @@ export default function FuelPage() {
         <SectionLabel>Strecke</SectionLabel>
 
         {/* Start + Destination dropdowns */}
-        <Stack direction="row" spacing="10px">
+        <Stack direction="column" spacing="10px">
           {/* Von */}
-          <FormControl sx={{ flex: 1 }}>
+          <FormControl fullWidth>
             <InputLabel>Von</InputLabel>
             <Select
               value={startName}
@@ -204,7 +204,7 @@ export default function FuelPage() {
           </FormControl>
 
           {/* Nach */}
-          <FormControl sx={{ flex: 1 }}>
+          <FormControl fullWidth>
             <InputLabel>Nach</InputLabel>
             <Select
               value={destName}
@@ -368,13 +368,15 @@ export default function FuelPage() {
           <Stack direction="row" spacing={3} alignItems="flex-end">
             <ResultRow
               label="Spritkosten"
-              value={`${euro.format(wakeCostMin)}–${euro.format(wakeCostMax)}`}
+              value={`${wakeCostMin}–${wakeCostMax} €`}
+              compact
             />
             <Box sx={{ width: '1px', height: 48, backgroundColor: dt.hairline, flexShrink: 0 }} />
             <ResultRow
               label={`Pro Person (÷ ${persons})`}
-              value={`${euro.format(Math.round(wakeCostMin / persons))}–${euro.format(Math.round(wakeCostMax / persons))}`}
+              value={`${Math.round(wakeCostMin / persons)}–${Math.round(wakeCostMax / persons)} €`}
               accent
+              compact
             />
           </Stack>
         </Paper>
