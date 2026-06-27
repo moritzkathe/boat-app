@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Box, Stack, Typography, Card, CardActionArea } from "@mui/material";
-import { CalendarMonth, Payments, FavoriteBorder, QrCode2, LocalGasStation } from "@mui/icons-material";
+import { CalendarMonth, Payments, FavoriteBorder, QrCode2, LocalGasStation, Anchor } from "@mui/icons-material";
 import { t } from "@/lib/i18n";
 import { dt } from "./theme";
 
@@ -35,6 +35,12 @@ const navItems = [
     icon: <LocalGasStation sx={{ fontSize: 20, color: dt.ink }} />,
     title: "Spritrechner",
     subtitle: "Strecken & Wakeboard-Kosten",
+  },
+  {
+    href: "/haefen",
+    icon: <Anchor sx={{ fontSize: 20, color: dt.ink }} />,
+    title: "Häfen",
+    subtitle: "Gastlieger & Kurzanleger am Bodensee",
   },
 ];
 
