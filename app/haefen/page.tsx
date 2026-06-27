@@ -3,9 +3,7 @@ import { useState } from "react";
 import {
   Box, Typography, Stack, Paper,
   Select, MenuItem, FormControl, InputLabel, ListSubheader,
-  Chip,
 } from "@mui/material";
-import { CheckCircleOutline, PhoneOutlined, LanguageOutlined, InfoOutlined } from "@mui/icons-material";
 import { dt } from "@/app/theme";
 
 type BookingType = 'pompomela' | 'boatpark' | 'direkt';
@@ -170,19 +168,6 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
-  return (
-    <Stack direction="row" spacing="12px" alignItems="flex-start">
-      <Box sx={{ color: dt.muted, mt: '2px', flexShrink: 0, display: 'flex' }}>{icon}</Box>
-      <Box>
-        <Typography sx={{ fontSize: '0.75rem', color: dt.muted, mb: '2px' }}>{label}</Typography>
-        <Typography sx={{ fontSize: '0.875rem', color: dt.ink, lineHeight: 1.45 }}>
-          {value}
-        </Typography>
-      </Box>
-    </Stack>
-  );
-}
 
 export default function HafenPage() {
   const [selectedName, setSelectedName] = useState('');
@@ -266,73 +251,93 @@ export default function HafenPage() {
       {harbor && (
         <Paper variant="outlined" sx={{ p: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-          {/* Harbor name + badges */}
-          <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-            <Box>
-              <Typography sx={{ fontSize: '1.25rem', fontWeight: 500, color: dt.ink, letterSpacing: '-0.02em' }}>
-                {harbor.name}
-              </Typography>
-              <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, mt: '2px' }}>
-                ~{harbor.km} km ab Immenstaad
-              </Typography>
-            </Box>
-            <Stack direction="row" spacing="6px" alignItems="center">
-              {harbor.kurzanleger && (
-                <Chip
-                  label="Kurzanleger"
-                  size="small"
-                  icon={<CheckCircleOutline sx={{ fontSize: '14px !important' }} />}
-                  sx={{
-                    fontSize: '0.6875rem', fontWeight: 600, height: 24,
-                    backgroundColor: 'rgba(31,138,101,0.1)', color: '#1f8a65',
-                    border: '1px solid rgba(31,138,101,0.2)',
-                    '& .MuiChip-icon': { color: '#1f8a65' },
-                  }}
-                />
-              )}
-            </Stack>
-          </Stack>
+          {/* Harbor name */}
+          <Box>
+            <Typography sx={{ fontSize: '1.25rem', fontWeight: 500, color: dt.ink, letterSpacing: '-0.02em' }}>
+              {harbor.name}
+            </Typography>
+            <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, mt: '2px' }}>
+              ~{harbor.km} km ab Immenstaad
+            </Typography>
+          </Box>
 
           <Box sx={{ height: '1px', backgroundColor: dt.hairline }} />
 
-          {/* Übernachtung */}
-          <Stack spacing="12px">
-            <SectionLabel>Gastlieger / Übernachtung</SectionLabel>
-            <Stack spacing="10px">
-              <InfoRow
-                icon={<CheckCircleOutline sx={{ fontSize: 16 }} />}
-                label="Gastplätze"
-                value={typeof harbor.gastplaetze === 'number' ? `${harbor.gastplaetze} Plätze` : harbor.gastplaetze}
-              />
-              <InfoRow
-                icon={<InfoOutlined sx={{ fontSize: 16 }} />}
-                label="Kosten"
-                value={harbor.kosten}
-              />
-              <InfoRow
-                icon={<InfoOutlined sx={{ fontSize: 16 }} />}
-                label="Buchung"
-                value={
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mt: '2px' }}>
-                    <Box sx={{
-                      display: 'inline-block', px: '8px', py: '2px',
-                      borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600,
-                      backgroundColor: `${booking!.color}18`,
-                      color: booking!.color,
-                      border: `1px solid ${booking!.color}30`,
-                    }}>
-                      {booking!.label}
-                    </Box>
-                  </Box>
-                }
-              />
-            </Stack>
+          {/* Info table */}
+          <Stack spacing="14px">
+            {[
+              {
+                label: 'Kurzanlegen',
+                value: harbor.kurzanleger
+                  ? 'Möglich — für einen Ausflug oder kurze Pause anlegen'
+                  : 'Nicht möglich',
+                valueColor: harbor.kurzanleger ? '#1f8a65' : dt.muted,
+              },
+              {
+                label: 'Übernachtung',
+                value: typeof harbor.gastplaetze === 'number'
+                  ? `Möglich — ${harbor.gastplaetze} Gastplätze`
+                  : `Möglich — ${harbor.gastplaetze}`,
+                valueColor: '#1f8a65',
+              },
+              { label: 'Kosten', value: harbor.kosten, valueColor: dt.ink },
+              {
+                label: 'Buchung',
+                value: harbor.buchung === 'direkt'
+                  ? null
+                  : booking!.label,
+                valueColor: booking!.color,
+                contact: harbor.buchung === 'direkt' ? (
+                  <Stack spacing="4px">
+                    {harbor.telefon && (
+                      <a href={`tel:${harbor.telefon.replace(/\s/g, '')}`} style={{ color: dt.primary, textDecoration: 'none', fontSize: '0.875rem' }}>
+                        {harbor.telefon}
+                      </a>
+                    )}
+                    {harbor.website && (
+                      <a href={harbor.website} target="_blank" rel="noopener noreferrer" style={{ color: dt.primary, textDecoration: 'none', fontSize: '0.875rem', wordBreak: 'break-all' }}>
+                        {harbor.website.replace(/^https?:\/\//, '')}
+                      </a>
+                    )}
+                  </Stack>
+                ) : (
+                  <Stack spacing="4px">
+                    <Typography sx={{ fontSize: '0.875rem', color: dt.muted }}>
+                      {harbor.buchung === 'pompomela' ? 'Pompomela-App installieren und Hafen auswählen' : 'Boatpark-App installieren und Hafen auswählen'}
+                    </Typography>
+                    {harbor.telefon && (
+                      <a href={`tel:${harbor.telefon.replace(/\s/g, '')}`} style={{ color: dt.primary, textDecoration: 'none', fontSize: '0.875rem' }}>
+                        Alternativ: {harbor.telefon}
+                      </a>
+                    )}
+                  </Stack>
+                ),
+              },
+            ].map(({ label, value, valueColor, contact }) => (
+              <Stack key={label} direction="row" spacing="16px" alignItems="flex-start">
+                <Typography sx={{
+                  fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.5px',
+                  textTransform: 'uppercase', color: dt.muted,
+                  minWidth: 88, pt: '2px', flexShrink: 0,
+                }}>
+                  {label}
+                </Typography>
+                <Box>
+                  {value && (
+                    <Typography sx={{ fontSize: '0.875rem', color: valueColor, lineHeight: 1.45, mb: contact ? '6px' : 0 }}>
+                      {value}
+                    </Typography>
+                  )}
+                  {contact}
+                </Box>
+              </Stack>
+            ))}
           </Stack>
 
           <Box sx={{ height: '1px', backgroundColor: dt.hairline }} />
 
           {/* Verfahren */}
-          <Stack spacing="10px">
+          <Stack spacing="8px">
             <SectionLabel>Wie es funktioniert</SectionLabel>
             <Typography sx={{ fontSize: '0.875rem', color: dt.ink, lineHeight: 1.6 }}>
               {harbor.verfahren}
@@ -341,44 +346,12 @@ export default function HafenPage() {
 
           {/* Notizen */}
           {harbor.notizen && (
-            <Box sx={{
-              borderLeft: `2px solid ${dt.hairlineStrong}`,
-              pl: '12px',
-            }}>
+            <Box sx={{ borderLeft: `2px solid ${dt.hairlineStrong}`, pl: '12px' }}>
               <Typography sx={{ fontSize: '0.8125rem', color: dt.muted, lineHeight: 1.5 }}>
                 {harbor.notizen}
               </Typography>
             </Box>
           )}
-
-          <Box sx={{ height: '1px', backgroundColor: dt.hairline }} />
-
-          {/* Kontakt */}
-          <Stack spacing="10px">
-            <SectionLabel>Kontakt</SectionLabel>
-            {harbor.telefon && (
-              <InfoRow
-                icon={<PhoneOutlined sx={{ fontSize: 16 }} />}
-                label="Telefon"
-                value={
-                  <a href={`tel:${harbor.telefon.replace(/\s/g, '')}`} style={{ color: dt.primary, textDecoration: 'none' }}>
-                    {harbor.telefon}
-                  </a>
-                }
-              />
-            )}
-            {harbor.website && (
-              <InfoRow
-                icon={<LanguageOutlined sx={{ fontSize: 16 }} />}
-                label="Website"
-                value={
-                  <a href={harbor.website} target="_blank" rel="noopener noreferrer" style={{ color: dt.primary, textDecoration: 'none', wordBreak: 'break-all' }}>
-                    {harbor.website.replace(/^https?:\/\//, '')}
-                  </a>
-                }
-              />
-            )}
-          </Stack>
         </Paper>
       )}
 
